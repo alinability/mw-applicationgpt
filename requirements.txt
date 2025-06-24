@@ -1,0 +1,6 @@
+openai
+pandas
+jinja2
+pdfkit
+python-dotenv
+notebook

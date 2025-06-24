@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Application Summary</title>
+</head>
+<body>
+    <h1>Top Projects</h1>
+    <ul>
+        {% for project in projects %}
+            <li><strong>{{ project.title }}</strong> – {{ project.description }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
