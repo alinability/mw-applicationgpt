@@ -4,3 +4,7 @@ jinja2
 pdfkit
 python-dotenv
 notebook
+pdfplumber
+tiktoken
+openai
+time
