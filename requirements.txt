@@ -5,6 +5,7 @@ pdfkit
 python-dotenv
 notebook
 pdfplumber
-tiktoken
+chromadb
 openai
-time
+tiktoken
+langchain

@@ -6,41 +6,29 @@ import datetime as dt
 import re
 import pdfplumber
 
-def find_csv_and_pdf(path: str) -> tuple[str, str]:
+def find_csv_and_pdf_files(path: str) -> tuple[list[str], list[str]]:
     """
-    Sucht in einem Verzeichnis nach genau einer CSV- und einer PDF-Datei.
-    
-    Gibt eine verständliche Fehlermeldung zurück, wenn:
-    - keine Dateien vorhanden sind
-    - unerwartete Formate auftauchen
-    - mehr oder weniger als je eine CSV und PDF vorhanden sind
-
-    Rückgabe:
-        Tuple[str, str]: (Pfad zur CSV-Datei, Pfad zur PDF-Datei)
+    Sucht nach allen CSV- und PDF-Dateien in einem Verzeichnis und gibt deren Pfade zurück.
+    Gibt zusätzlich Feedback zur Anzahl der gefundenen Dateien.
     """
     if not os.path.isdir(path):
         raise NotADirectoryError(f"❌ Der Pfad ist kein gültiges Verzeichnis: {path}")
 
     files = os.listdir(path)
-
+    
     if not files:
-        raise FileNotFoundError("❌ Es wurden keine Dateien im angegebenen Verzeichnis gefunden.")
+        raise FileNotFoundError("❌ Keine Dateien im angegebenen Verzeichnis gefunden.")
 
-    # Filtere nur csv und pdf
     csv_files = [os.path.join(path, f) for f in files if f.lower().endswith(".csv")]
     pdf_files = [os.path.join(path, f) for f in files if f.lower().endswith(".pdf")]
-    other_files = [f for f in files if not f.lower().endswith((".csv", ".pdf"))]
 
-    if len(csv_files) == 0:
-        raise FileNotFoundError("❌ Es wurde keine CSV-Datei gefunden.")
-    if len(csv_files) > 1:
-        raise FileNotFoundError(f"❌ Es wurden mehrere CSV-Dateien gefunden: {len(csv_files)}") # ToDo: ggf Anpassung für mehrere Datein. So, dass sowohl meherere Stellenanzeigen als auch Projektlisten genutzt werden können.
+    print(f"📄 Gefundene CSV-Dateien: {len(csv_files)}")
+    print(f"📄 Gefundene PDF-Dateien: {len(pdf_files)}")
 
-    if len(pdf_files) == 0:
-        raise FileNotFoundError("❌ Es wurde keine PDF-Datei gefunden.")
-    if len(pdf_files) > 1:
-        raise FileNotFoundError(f"❌ Es wurden mehrere PDF-Dateien gefunden: {len(pdf_files)}")
-    return csv_files[0], pdf_files[0]
+    if not pdf_files:
+        raise FileNotFoundError("❌ Keine PDF-Datei gefunden. Bitte stelle sicher, dass mindestens eine PDF im Ordner liegt.")
+
+    return csv_files, pdf_files
 
 def detect_separator(filepath: str) -> str:
     """
