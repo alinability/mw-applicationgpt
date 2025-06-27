@@ -1,17 +1,17 @@
-from app.input_manager import (
+from .input_manager import (
     find_csv_and_pdf_files,
     load_resume_data,
     extract_clean_text_from_pdf,
     reduce_pdf_to_essentials
 )
 
-from app.rag_manager import (
+from .rag_manager import (
     create_collection,
     add_dataframe_to_chroma,
     query_relevant_entries
 )
 
-from app.openai_client import (
+from .openai_client import (
     ask_chatgpt_single_prompt,
     build_prompt
 )
