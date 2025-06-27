@@ -5,6 +5,7 @@ import pandas as pd
 import datetime as dt
 import re
 import pdfplumber
+from openai_client import ask_chatgpt_single_prompt, validate_prompt_length
 
 def find_csv_and_pdf_files(path: str) -> tuple[list[str], list[str]]:
     """
@@ -198,3 +199,18 @@ def extract_clean_text_from_pdf(pdf_path: str) -> str:
 
     return cleaned_text
 
+def reduce_pdf_to_essentials(text: str) -> str:
+    """
+    Nutzt ChatGPT, um eine Stellenanzeige auf die wichtigsten Anforderungen und Aufgaben zu reduzieren.
+    """
+    prompt = (
+        "Hier ist der Text einer Stellenanzeige. Fasse die Anzeige in 5–10 Bullet Points zusammen "
+        "mit Fokus auf die wichtigsten Anforderungen, Aufgaben und Qualifikationen. "
+        "Lass irrelevante Informationen weg (z. B. Selbstbeschreibungen des Unternehmens):\n\n"
+        f"{text}"
+    )
+
+    validate_prompt_length(prompt)
+    reduced = ask_chatgpt_single_prompt(prompt)
+    print("✅ PDF-Inhalt wurde erfolgreich reduziert.")
+    return reduced

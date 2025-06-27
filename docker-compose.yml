@@ -5,11 +5,11 @@ services:
       - .:/app
       - ./input:/input
       - ./output:/output
+      - ./data/chroma:/app/data/chroma  # 🧠 Mount für Chroma-Datenbank
     ports:
       - "8888:8888"
     working_dir: /app
     env_file:
       - .env
     # Optional: direkt main.py starten
-    #command: python main.py
-
+    command: python main.py

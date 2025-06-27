@@ -1,24 +1,64 @@
-from app.input_manager import find_csv_and_pdf_files, load_resume_data, extract_clean_text_from_pdf
+from app.input_manager import (
+    find_csv_and_pdf_files,
+    load_resume_data,
+    extract_clean_text_from_pdf,
+    reduce_pdf_to_essentials
+)
 
-INPUT_FOLDER = "input"
+from app.rag_manager import (
+    create_collection,
+    add_dataframe_to_chroma,
+    query_relevant_entries
+)
+
+from app.openai_client import (
+    ask_chatgpt_single_prompt,
+    build_prompt
+)
+
+import os
+
+INPUT_FOLDER = "data/input"
 
 def main():
     # Suche nach Dateien
     csv_files, pdf_files = find_csv_and_pdf_files(INPUT_FOLDER)
 
-    # ToDo: Prüfen welche Files neu sind 
+    if not csv_files:
+        print("⚠️ Keine CSV-Dateien gefunden.")
+        return
 
-    # Aktuell: Verwende nur die erste PDF für das Stellenprofil
+    if not pdf_files:
+        print("⚠️ Keine PDF-Dateien gefunden.")
+        return
+
+    # Verwende nur die erste PDF für das Stellenprofil
     pdf_path = pdf_files[0]
     pdf_text = extract_clean_text_from_pdf(pdf_path)
+    reduced_text = reduce_pdf_to_essentials(pdf_text)
 
-    # Mehrere CSVs könnten später einzeln ins RAG gespeichert werden
+    # Erstelle oder hole Collection
+    collection = create_collection(name="bewerbung")
+
+    # Füge CSV-Dateien ins RAG ein
     for csv_path in csv_files:
         df = load_resume_data(csv_path)
-        # ToDo: Übergabe an rag_manager folgt
+        add_dataframe_to_chroma(df, collection, source_id=os.path.basename(csv_path))
 
-    # ToDo: Übergabe an Prompt-Generator + RAG
-    print("✅ PDF und CSV-Dateien erfolgreich verarbeitet.")
+    print("✅ PDF und CSV-Dateien erfolgreich verarbeitet und ins RAG eingefügt.")
 
-if __name__ == "__main__":
-    main()
+    # Relevante Berufserfahrungen abfragen
+    retrieved_docs = query_relevant_entries(collection, reduced_text, n_results=5)
+
+    # Prompt generieren
+    final_prompt = build_prompt(reduced_text, retrieved_docs)
+
+    #print("\n📨 Finaler Prompt zur Übergabe an ChatGPT:")
+    #print(final_prompt)
+
+    # Anfrage an ChatGPT senden
+    #print("\n🤖 Sende Prompt an ChatGPT...")
+    response = ask_chatgpt_single_prompt(final_prompt)
+
+    print("\n🎯 Antwort von ChatGPT:")
+    print(response)
