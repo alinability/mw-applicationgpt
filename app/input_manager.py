@@ -5,7 +5,10 @@ import pandas as pd
 import datetime as dt
 import re
 import pdfplumber
-from openai_client import ask_chatgpt_single_prompt, validate_prompt_length
+try:
+    from app.openai_client import ask_chatgpt_single_prompt, validate_prompt_length
+except ImportError:
+    from openai_client import ask_chatgpt_single_prompt, validate_prompt_length
 
 def find_csv_and_pdf_files(path: str) -> tuple[list[str], list[str]]:
     """

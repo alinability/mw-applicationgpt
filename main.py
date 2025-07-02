@@ -1,22 +1,42 @@
-from .input_manager import (
-    find_csv_and_pdf_files,
-    load_resume_data,
-    extract_clean_text_from_pdf,
-    reduce_pdf_to_essentials
-)
-
-from .rag_manager import (
-    create_collection,
-    add_dataframe_to_chroma,
-    query_relevant_entries
-)
-
-from .openai_client import (
-    ask_chatgpt_single_prompt,
-    build_prompt
-)
-
 import os
+import sys
+
+# Stelle sicher, dass das Verzeichnis "app" im Pfad ist
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "app")))
+
+# Flexibler Import für beide Umgebungen (Notebook vs Docker-Ausführung)
+try:
+    from app.input_manager import (
+        find_csv_and_pdf_files,
+        load_resume_data,
+        extract_clean_text_from_pdf,
+        reduce_pdf_to_essentials,
+    )
+    from app.rag_manager import (
+        create_collection,
+        add_dataframe_to_chroma,
+        query_relevant_entries,
+    )
+    from app.openai_client import (
+        ask_chatgpt_single_prompt,
+        build_prompt,
+    )
+except ImportError:
+    from input_manager import (
+        find_csv_and_pdf_files,
+        load_resume_data,
+        extract_clean_text_from_pdf,
+        reduce_pdf_to_essentials,
+    )
+    from rag_manager import (
+        create_collection,
+        add_dataframe_to_chroma,
+        query_relevant_entries,
+    )
+    from openai_client import (
+        ask_chatgpt_single_prompt,
+        build_prompt,
+    )
 
 INPUT_FOLDER = "data/input"
 

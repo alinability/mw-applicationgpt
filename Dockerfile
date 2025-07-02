@@ -2,11 +2,12 @@
 FROM python:3.11-slim
 
 # Systempakete installieren (für pdfkit)
-RUN apt-get update && apt-get install -y --fix-missing \
-    wkhtmltopdf \
-    curl \
-    build-essential \
-    && apt-get clean
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        wkhtmltopdf \
+        curl \
+        build-essential && \
+    rm -rf /var/lib/apt/lists/*
 
 # Arbeitsverzeichnis
 WORKDIR /app

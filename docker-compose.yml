@@ -3,6 +3,7 @@ services:
     build: .
     volumes:
       - .:/app
+      - ./data:/app/data 
       - ./input:/input
       - ./output:/output
       - ./data/chroma:/app/data/chroma  # 🧠 Mount für Chroma-Datenbank
