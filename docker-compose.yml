@@ -1,16 +1,16 @@
+version: "3.9"
 services:
   app:
     build: .
     volumes:
-      - .:/app
-      - ./data:/app/data 
-      - ./input:/input
+      - ./:/app
+      - ./input:/app/input           
+      - ./data/chroma:/app/data/chroma
       - ./output:/output
-      - ./data/chroma:/app/data/chroma  # 🧠 Mount für Chroma-Datenbank
     ports:
       - "8888:8888"
     working_dir: /app
     env_file:
       - .env
-    # Optional: direkt main.py starten
-    command: python main.py
+    command: python main.py  # ✅ Startet main.py beim Containerstart
+    #command: jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=''

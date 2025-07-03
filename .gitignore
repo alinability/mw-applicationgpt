@@ -1,8 +1,22 @@
+# Environment files
 .env
+
+# Bytecode & Cache
 __pycache__/
 *.pyc
+
+# Jupyter
 *.ipynb_checkpoints
-output/.env
+
+# macOS
+.DS_Store
+
+# Virtuelle Umgebung
+.venv/
+
+# Datenbanken & lokale Artefakte
+*.sqlite3
 notebooks/data/chroma/
-.env
-notebooks/data/chroma/
+
+# Generierte Dateien
+output/

@@ -6,6 +6,7 @@ python-dotenv
 notebook
 pdfplumber
 chromadb
-openai
+openai>=1.0.0
 tiktoken
 langchain
+jinja2
