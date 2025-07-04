@@ -1,8 +1,9 @@
-import os
 from dotenv import load_dotenv, find_dotenv
 # Lade Umgebungsvariablen aus .env
 load_dotenv(find_dotenv())
 
+import os
+import re
 from openai import OpenAI
 from prompt_utils import count_tokens, DEFAULT_MODEL
 
@@ -70,3 +71,76 @@ def build_prompt(job_text: str, experiences: list[str], model: str = DEFAULT_MOD
 
     validate_prompt_length(full_prompt, model=model, max_tokens=max_tokens)
     return full_prompt
+
+def is_wrapped_with_same_tag(html: str) -> bool:
+    """
+    Prüft, ob `html` mit <tag>…</tag> umschlossen ist, wobei 'tag' an beiden Stellen identisch sein muss.
+    """
+    html = html.strip()
+    m = re.match(r'^<\s*([A-Za-z0-9]+)(?:\s+[^>]*)?>', html)
+    if not m:
+        return False
+    tag = m.group(1)
+    return bool(re.search(rf'</\s*{re.escape(tag)}\s*>$', html))
+
+def validate_html_list(response: str) -> bool:
+    """
+    Prüft, ob `response` eine HTML-Liste (<ul> oder <ol>) mit genau drei nicht-leeren <li>-Einträgen ist.
+    Gibt True zurück, wenn alles passt, sonst False und druckt die gefundenen Fehler.
+    """
+    errors = []
+
+    # 1) Entferne mögliche Markdown-Codefences
+    clean = response
+    
+    # html → Zeilenumbruch
+    clean = re.sub(r'html', '\n', clean)
+    
+    # am Zeilenanfang oder -ende beliebig viele ' löschen
+    clean = re.sub(r"(?m)^[']+|[']+$", "", clean)
+
+    # 2) Entferne komplett leere Zeilen oder solche mit nur Whitespace
+    #    (?m) aktiviert den Multiline-Mode, sodass ^/$ auf Zeilenanfang/-ende abzielen
+    clean = re.sub(r'(?m)^[ \t]*\n', '', clean)
+
+    # 3) Überprüfe, ob die Liste richtig mit <ul>…</ul> oder <ol>…</ol> umschlossen ist
+    if not is_wrapped_with_same_tag(clean):
+        errors.append("❌ Keine korrekt formatierte HTML-Liste gefunden (fehlende umschließenden <ul>/<ol>-Tags).")
+
+    # 4) Finde alle <li>…</li>
+    items = re.findall(r'<li\b[^>]*>(.*?)</li>', clean, flags=re.DOTALL | re.IGNORECASE)
+    if len(items) != 3:
+        errors.append(f"❌ Liste enthält {len(items)} Einträge, erwartet werden genau 3.")
+
+    # 5) Prüfe, dass jeder Eintrag nicht nur aus Tags besteht, sondern echten Text enthält
+    for idx, inner in enumerate(items, start=1):
+        text = re.sub(r'<[^>]+>', '', inner).strip()
+        if not text:
+            errors.append(f"❌ Listeneintrag {idx} ist leer.")
+
+    # 6) Fehler ausgeben und Ergebnis zurückgeben
+    if errors:
+        for err in errors:
+            print(err)
+        return False
+
+    return response
+
+def get_response(reduced_text: str, retrieved_docs: str):
+    quality_check_rensponse = False
+    n = 0
+    
+    # Prompt bauen und an ChatGPT senden
+    while quality_check_rensponse == False and n <= 2:
+        
+        final_prompt = build_prompt(reduced_text, retrieved_docs)  
+        response = ask_chatgpt_single_prompt(final_prompt)
+        response = validate_html_list(response)
+        n += 1
+    
+    if response == False:
+        print("❌ ChatGPT Anfrage nicht wie erwartet.")
+    
+    return response
+
+

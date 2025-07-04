@@ -217,3 +217,9 @@ def reduce_pdf_to_essentials(text: str) -> str:
     reduced = ask_chatgpt_single_prompt(prompt)
     print("✅ PDF-Inhalt wurde erfolgreich reduziert.")
     return reduced
+
+def process_pdf(pdf_path):
+    # PDF-Text extrahieren und reduzieren
+    pdf_text = extract_clean_text_from_pdf(pdf_path) #input_manager
+    reduced_text = reduce_pdf_to_essentials(pdf_text) #input_manager
+    return reduced_text
