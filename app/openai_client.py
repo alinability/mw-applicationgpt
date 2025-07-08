@@ -88,43 +88,39 @@ def validate_html_list(response: str) -> bool:
     Prüft, ob `response` eine HTML-Liste (<ul> oder <ol>) mit genau drei nicht-leeren <li>-Einträgen ist.
     Gibt True zurück, wenn alles passt, sonst False und druckt die gefundenen Fehler.
     """
-    errors = []
 
     # 1) Entferne mögliche Markdown-Codefences
-    clean = response
     
     # html → Zeilenumbruch
-    clean = re.sub(r'html', '\n', clean)
+    clean = re.sub(r'html', '\n', response)
     
     # am Zeilenanfang oder -ende beliebig viele ' löschen
-    clean = re.sub(r"(?m)^[']+|[']+$", "", clean)
+    clean = re.sub(r"(\s)*(`)+(\n)*", "", clean)
 
     # 2) Entferne komplett leere Zeilen oder solche mit nur Whitespace
     #    (?m) aktiviert den Multiline-Mode, sodass ^/$ auf Zeilenanfang/-ende abzielen
     clean = re.sub(r'(?m)^[ \t]*\n', '', clean)
 
     # 3) Überprüfe, ob die Liste richtig mit <ul>…</ul> oder <ol>…</ol> umschlossen ist
-    if not is_wrapped_with_same_tag(clean):
-        errors.append("❌ Keine korrekt formatierte HTML-Liste gefunden (fehlende umschließenden <ul>/<ol>-Tags).")
+    if bool(is_wrapped_with_same_tag(clean)) == False:
+        print("❌ Keine korrekt formatierte HTML-Liste gefunden (fehlende umschließenden <il>/<ul>/<ol>-Tags).")
+        print(clean)
+        return False
 
     # 4) Finde alle <li>…</li>
     items = re.findall(r'<li\b[^>]*>(.*?)</li>', clean, flags=re.DOTALL | re.IGNORECASE)
     if len(items) != 3:
-        errors.append(f"❌ Liste enthält {len(items)} Einträge, erwartet werden genau 3.")
+        print(f"❌ Liste enthält {len(items)} Einträge, erwartet werden genau 3.")
+        return False
 
     # 5) Prüfe, dass jeder Eintrag nicht nur aus Tags besteht, sondern echten Text enthält
     for idx, inner in enumerate(items, start=1):
         text = re.sub(r'<[^>]+>', '', inner).strip()
         if not text:
-            errors.append(f"❌ Listeneintrag {idx} ist leer.")
-
-    # 6) Fehler ausgeben und Ergebnis zurückgeben
-    if errors:
-        for err in errors:
-            print(err)
-        return False
-
-    return response
+            print(f"❌ Listeneintrag {idx} ist leer.")
+            return False
+        
+    return clean
 
 def get_response(reduced_text: str, retrieved_docs: str):
     quality_check_rensponse = False
@@ -140,6 +136,7 @@ def get_response(reduced_text: str, retrieved_docs: str):
     
     if response == False:
         print("❌ ChatGPT Anfrage nicht wie erwartet.")
+        print(response)
     
     return response
 
