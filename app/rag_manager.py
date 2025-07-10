@@ -84,7 +84,7 @@ def add_dataframe_to_chroma(df: pd.DataFrame, collection, source_id: str = "resu
         print("⚠️ Keine neuen Dokumente hinzugefügt (alle bereits vorhanden?).")
 
 
-def query_relevant_entries(collection, query: str, n_results: int = 5) -> list[str]:
+def query_relevant_entries(collection, query: str, n_results: int = 8) -> list[str]:
     """
     Fragt die Chroma-Collection nach den relevantesten Dokumenten zur gegebenen Anfrage ab.
     """
@@ -137,22 +137,31 @@ def validate_retrieved_docs(docs):
 
     return True
 
-def csv_to_db(csv_files: list, persist_dir: str = persist_dir):
-    # Chroma-Collection erzeugen
-    collection = create_collection(
+def csv_to_db(csv_files: list, persist_dir: str = persist_dir, new_data: bool = True):
+    print(new_data)
+    if new_data:
+        # Chroma-Collection erzeugen
+        collection = create_collection(
+            name="bewerbung",
+            persist_directory=persist_dir
+        )
+
+        # CSVs ins RAG laden
+        for csv_path in csv_files:
+            df = load_resume_data(csv_path)
+            add_dataframe_to_chroma(
+                df,
+                collection,
+                source_id=os.path.basename(csv_path)
+            )
+            print("✅ PDF und CSV-Dateien erfolgreich verarbeitet und ins RAG eingefügt.")
+    else:
+        # Bestehende Collection laden
+        print("🔄 Lade aus bestehender Collection.")
+        collection = create_collection(
         name="bewerbung",
         persist_directory=persist_dir
-    )
-
-    # CSVs ins RAG laden
-    for csv_path in csv_files:
-        df = load_resume_data(csv_path)
-        add_dataframe_to_chroma(
-            df,
-            collection,
-            source_id=os.path.basename(csv_path)
         )
-        print("✅ PDF und CSV-Dateien erfolgreich verarbeitet und ins RAG eingefügt.")
     return collection
 
 def get_docs(collection: chromadb.api.models.Collection.Collection, reduced_text: str):
@@ -172,5 +181,6 @@ def get_docs(collection: chromadb.api.models.Collection.Collection, reduced_text
         print("❌ Kein Daten aus der DB abrufbar.")
     
     return retrieved_docs
+    
     
     

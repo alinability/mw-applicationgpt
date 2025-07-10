@@ -11,3 +11,4 @@ tiktoken
 langchain
 jinja2
 typing
+import hashlib

@@ -19,9 +19,13 @@ client = OpenAI(api_key=api_key)
 def ask_chatgpt_single_prompt(
     prompt: str,
     model: str = DEFAULT_MODEL,
-    temperature: float = 0.2
-) -> str:
-    """Sendet einen einfachen Prompt an ChatGPT und gibt die Antwort als Text zurück."""
+    temperature: float = 0.2,
+    max_tokens: int = 500
+    ) -> str:
+    """
+    Sendet einen einzelnen Prompt an ChatGPT und gibt den Text zurück.
+    Loggt dabei die genutzten Tokens zur Kostenkontrolle.
+    """
     # Token-Länge prüfen
     count_tokens(prompt, model=model)
 
@@ -29,12 +33,15 @@ def ask_chatgpt_single_prompt(
     response = client.chat.completions.create(
         model=model,
         temperature=temperature,
-        messages=[{"role": "user", "content": prompt}]
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=max_tokens
     )
+
+    usage = response.usage
+    print(f"ℹ️ Model: {model} | prompt_tokens={usage.prompt_tokens} | completion_tokens={usage.completion_tokens}")
 
     # Extrahiere und returniere den Content
     return response.choices[0].message.content.strip()
-
 
 def validate_prompt_length(
     prompt: str,
@@ -61,6 +68,7 @@ def build_prompt(job_text: str, experiences: list[str], model: str = DEFAULT_MOD
         "  <em>[Zeitraum]</em><br>\n"
         "  [Beschreibung in max. 2 Sätzen]\n"
         "</li>\n\n"
+        "Bitte sortiere die Erfahrungen zeitlich absteigend."
         "⚠️ Gib nur die drei HTML-Elemente zurück – ohne Einleitung oder zusätzliche Erläuterungen."
     )
 
@@ -122,6 +130,80 @@ def validate_html_list(response: str) -> bool:
         
     return clean
 
+def estimate_match_score(job_description: str, experiences: list[str]) -> float | None:
+    """
+    Fragt das OpenAI-API, die Passgenauigkeit des Bewerbers für die Stelle
+    auf einer Skala von 0–100 einzuschätzen, basierend auf der Stellenbeschreibung
+    und den relevanten Erfahrungen. Berücksichtigt dabei u.a.:
+      • Fachliche Übereinstimmung (Technologien, Methoden)
+      • Führungskompetenz und Teamgröße
+      • Branchenerfahrung
+      • Erreichte Ergebnisse / Impact
+      • Sprach- und Kulturkompetenz (z.B. Nearshore-Management)
+    Gibt die Zahl (0–100) zurück oder None, wenn keine Zahl erkannt wurde.
+    """
+    # Baue den Prompt mit klareren Bewertungskriterien
+    prompt = f"""Bitte bewerte auf einer Skala von 0 bis 100, wie gut der Bewerber
+auf die folgende Stellenanzeige passt. Gehe dabei insbesondere auf diese Punkte ein:
+  1. Fachliche Übereinstimmung: genutzte Technologien, Frameworks, Methoden
+  2. Führungserfahrung: Teamgröße, Art der Verantwortung
+  3. Branchen- und Domainwissen
+  4. Nachweisbarer Impact / erzielte Ergebnisse
+  5. Sprach-, Standort- oder Kulturkompetenz (z.B. Nearshore-Management)
+  
+Antworte bitte ganz kurz mit einer einzigen Zahl (z.B. `87`).  
+  
+Stellenanzeige:
+{job_description}
+
+Relevante Berufserfahrungen:
+"""
+    for idx, exp in enumerate(experiences, 1):
+        prompt += f"{idx}. {exp}\n"
+    prompt += "\nNur die Zahl zurückgeben, keine weiteren Erklärungen."
+
+    # Anfrage an ChatGPT
+    response = ask_chatgpt_single_prompt(prompt, model="gpt-3.5-turbo", temperature=0.0)
+
+    # Extrahiere eine Zahl
+    m = re.search(r"(\d{1,3}(?:\.\d+)?)", response)
+    if not m:
+        return None
+    score = float(m.group(1))
+    # Begrenze auf 0–100
+    return max(0.0, min(100.0, score))
+
+def refine_experiences_list(job_description, retrieved_docs, experiences_html):
+    """
+    Fragt bei ChatGPT nach, ob die drei HTML-Experience-Einträge 
+    wirklich die relevantesten sind, basierend auf:
+      - der Stellenanzeige (job_description)
+      - den ursprünglichen Retrieval-Dokumenten (retrieved_docs)
+      - der aktuellen HTML-Liste (experiences_html)
+    Gibt immer eine HTML-Liste mit exakt drei <li> zurück.
+    """
+    # Roh-Dokumente aufzählen
+    docs_text = "\n".join(f"{i+1}. {doc}" for i, doc in enumerate(retrieved_docs))
+
+    prompt = f"""Du bist ein Bewerber-Matching-Experte.
+
+    Stellenanzeige (reduziert):
+    {job_description}
+
+    Roh-Dokumente aus dem RAG (Top-5):
+    {docs_text}
+
+    Aktuelle Auswahl der Top-3 Berufserfahrungen als HTML-Liste:
+    {experiences_html}
+
+    1. Bewerte anhand der Stellenanzeige, ob diese drei Einträge wirklich die relevantesten sind.
+    2. Falls ja, antworte nur mit der unveränderten HTML-Liste.
+    3. Falls nein, wähle aus den obigen 5 Roh-Dokumenten die drei passendsten aus
+    und liefere sie als neue HTML-Liste mit genau drei <li>…</li> zurück.
+    4. Gib ausschließlich die endgültige HTML-Liste zurück (ohne Erklärung)."""
+
+    return ask_chatgpt_single_prompt(prompt, model="gpt-3.5-turbo", temperature=0.0)
+
 def get_response(reduced_text: str, retrieved_docs: str):
     quality_check_rensponse = False
     n = 0
@@ -136,8 +218,16 @@ def get_response(reduced_text: str, retrieved_docs: str):
     
     if response == False:
         print("❌ ChatGPT Anfrage nicht wie erwartet.")
-        print(response)
+
+    response = refine_experiences_list(reduced_text, retrieved_docs, response)   
+
+    if response == False:
+        print("❌ ChatGPT Anfrage nicht wie erwartet.")
+
+    score = estimate_match_score(reduced_text, retrieved_docs)
+    if score is None:
+        print("⚠️ Konnte keine Passgenauigkeitszahl aus der Antwort extrahieren.")
+    else:
+        print(f"🎯 Passgenauigkeit laut ChatGPT: {score:.1f}%")
     
     return response
-
-

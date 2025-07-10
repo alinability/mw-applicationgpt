@@ -2,13 +2,16 @@
 
 import os
 import pandas as pd
-import datetime as dt
 import re
 import pdfplumber
+import hashlib
+
 try:
     from app.openai_client import ask_chatgpt_single_prompt, validate_prompt_length
 except ImportError:
     from openai_client import ask_chatgpt_single_prompt, validate_prompt_length
+
+CACHE_DIR = "./data/cache"
 
 def find_csv_and_pdf_files(path: str) -> tuple[list[str], list[str]]:
     """
@@ -196,16 +199,38 @@ def extract_clean_text_from_pdf(pdf_path: str) -> str:
     cleaned_text = normalize_pdf_text(raw_text)
 
     if not cleaned_text.strip():
-        raise ValueError("❌ Es konnte kein sinnvoller Text aus der PDF extrahiert werden. Möglicherweise enthält die Datei nur Bilder.")
+        raise ValueError("❌ Es konnte kein sinnvoller Text aus der PDF extrahiert werden.")
     
     print("✅ Die Stellenauschreibung wurde erkannt.")
 
     return cleaned_text
 
-def reduce_pdf_to_essentials(text: str) -> str:
+def _get_cache_path(key: str) -> str:
+        return os.path.join(CACHE_DIR, f"{key}.txt")
+
+def load_cached_reduction(key: str) -> str | None:
+        os.makedirs(CACHE_DIR, exist_ok=True)
+        path = _get_cache_path(key)
+        if os.path.exists(path):
+            print("🔄 Verwende gecachte Reduktion.")
+            return open(path, "r", encoding="utf-8").read()
+        return None
+
+def save_cached_reduction(key: str, text: str):
+        os.makedirs(CACHE_DIR, exist_ok=True)
+        with open(_get_cache_path(key), "w", encoding="utf-8") as f:
+            f.write(text)
+
+def make_key_from_file(pdf_path: str) -> str:
+    buf = open(pdf_path, "rb").read()
+    return hashlib.sha256(buf).hexdigest()
+
+def reduce_pdf_to_essentials(text: str, pdf_path : str, cache_key: str) -> str:
     """
-    Nutzt ChatGPT, um eine Stellenanzeige auf die wichtigsten Anforderungen und Aufgaben zu reduzieren.
+    Reduziert den PDF-Text auf das Wesentliche via ChatGPT, mit einfachem Cache.
     """
+    # Ein Key: entweder aus Dateiname oder Hash des Inhalts
+    
     prompt = (
         "Hier ist der Text einer Stellenanzeige. Fasse die Anzeige in 5–10 Bullet Points zusammen "
         "mit Fokus auf die wichtigsten Anforderungen, Aufgaben und Qualifikationen. "
@@ -215,11 +240,28 @@ def reduce_pdf_to_essentials(text: str) -> str:
 
     validate_prompt_length(prompt)
     reduced = ask_chatgpt_single_prompt(prompt)
+
+    save_cached_reduction(cache_key, reduced)
+
     print("✅ PDF-Inhalt wurde erfolgreich reduziert.")
     return reduced
 
-def process_pdf(pdf_path):
-    # PDF-Text extrahieren und reduzieren
-    pdf_text = extract_clean_text_from_pdf(pdf_path) #input_manager
-    reduced_text = reduce_pdf_to_essentials(pdf_text) #input_manager
+def process_pdf(pdf_path: str) -> str:
+    """
+    Verwendet zunächst den gecachten Digest (Hash) der PDF, falls vorhanden.
+    Nur wenn noch keine Zusammenfassung existiert,
+    wird die PDF eingelesen, reduziert und gespeichert.
+    """
+    # 1) Key bestimmen anhand des Datei-Hashes
+    key = make_key_from_file(pdf_path)
+
+    # 2) Cache prüfen
+    cached = load_cached_reduction(key)
+    if cached:
+        print(f"🔄 Verwende gecachte Reduktion für Schlüssel {key}.")
+        return cached
+
+    # 3) PDF neu verarbeiten und Zusammenfassung speichern
+    pdf_text     = extract_clean_text_from_pdf(pdf_path)
+    reduced_text = reduce_pdf_to_essentials(pdf_text, pdf_path, cache_key=key)
     return reduced_text
