@@ -38,7 +38,7 @@ def ask_chatgpt_single_prompt(
     )
 
     usage = response.usage
-    print(f"ℹ️ Model: {model} | prompt_tokens={usage.prompt_tokens} | completion_tokens={usage.completion_tokens}")
+    #print(f"ℹ️ Model: {model} | prompt_tokens={usage.prompt_tokens} | completion_tokens={usage.completion_tokens}")
 
     # Extrahiere und returniere den Content
     return response.choices[0].message.content.strip()
@@ -68,8 +68,8 @@ def build_prompt(job_text: str, experiences: list[str], model: str = DEFAULT_MOD
         "  <em>[Zeitraum]</em><br>\n"
         "  [Beschreibung in max. 2 Sätzen]\n"
         "</li>\n\n"
-        "Bitte sortiere die Erfahrungen zeitlich absteigend."
-        "⚠️ Gib nur die drei HTML-Elemente zurück – ohne Einleitung oder zusätzliche Erläuterungen."
+        "Bitte sortiere die Erfahrungen zeitlich absteigend nach den Anfangsdaten."
+        "Gib nur die drei HTML-Elemente zurück – ohne Einleitung oder zusätzliche Erläuterungen."
     )
 
     job_section = f"\n\n📌 **Stellenanzeige**:\n{job_text.strip()}"

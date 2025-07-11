@@ -84,7 +84,7 @@ def add_dataframe_to_chroma(df: pd.DataFrame, collection, source_id: str = "resu
         print("⚠️ Keine neuen Dokumente hinzugefügt (alle bereits vorhanden?).")
 
 
-def query_relevant_entries(collection, query: str, n_results: int = 8) -> list[str]:
+def query_relevant_entries(collection, query: str, n_results: int = 5) -> list[str]:
     """
     Fragt die Chroma-Collection nach den relevantesten Dokumenten zur gegebenen Anfrage ab.
     """
