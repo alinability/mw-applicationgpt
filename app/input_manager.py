@@ -5,11 +5,18 @@ import pandas as pd
 import re
 import pdfplumber
 import hashlib
+import os
+import re
+import pdfplumber
+import ocrmypdf
+import tempfile
 
 try:
     from app.openai_client import ask_chatgpt_single_prompt, validate_prompt_length
+    from app.prompt_utils import count_tokens, chunk_text_by_tokens
 except ImportError:
     from openai_client import ask_chatgpt_single_prompt, validate_prompt_length
+    from prompt_utils import count_tokens, chunk_text_by_tokens
 
 CACHE_DIR = "./data/cache"
 
@@ -180,6 +187,7 @@ def normalize_pdf_text(text: str) -> str:
 def extract_clean_text_from_pdf(pdf_path: str) -> str:
     """
     Extrahiert und bereinigt den Text aus einer PDF-Datei mit pdfplumber.
+    Falls dabei kein Text herauskommt, wird OCR nachgeladen und erneut extrahiert.
     
     Vorteile gegenüber PyPDF2:
     - Bessere Textstruktur
@@ -189,21 +197,51 @@ def extract_clean_text_from_pdf(pdf_path: str) -> str:
     Rückgabe:
         str: Bereinigter Text der PDF
     """
+    def _read_pdf(path: str) -> str:
+        with pdfplumber.open(path) as pdf:
+            return " ".join(page.extract_text() or "" for page in pdf.pages)
+
+    # 1) Erster Versuch ohne OCR
     try:
-        with pdfplumber.open(pdf_path) as pdf:
-            raw_text = " ".join(page.extract_text() or "" for page in pdf.pages)
+        raw_text = _read_pdf(pdf_path)
     except Exception as e:
         raise ValueError(f"❌ Fehler beim Öffnen oder Lesen der PDF-Datei: {e}")
 
-    # Text bereinigen
     cleaned_text = normalize_pdf_text(raw_text)
+
+    # 2) Falls kein sinnvoller Text, OCR-Fallback
+    ocr_pdf_path = False
+    pattern = re.compile(r'^(?:\b\w+\b\W+){49}\b\w+\b', flags=re.UNICODE)
+    if not bool(pattern.match(cleaned_text.strip())):
+    #if not cleaned_text.strip():
+        print("ℹ️ Kein Text gefunden, führe OCR nach ...")
+        fd, ocr_pdf_path = tempfile.mkstemp(suffix=".pdf")
+        os.close(fd)
+        try:
+            # force_ocr sorgt dafür, dass auch textbasierte PDFs verarbeitet werden
+           ocrmypdf.ocr(
+                pdf_path,
+                ocr_pdf_path,
+                output_type="pdf",
+                force_ocr=True,
+                skip_text=False,
+                redo_ocr=False
+            )
+           raw_text = _read_pdf(ocr_pdf_path)
+           cleaned_text = normalize_pdf_text(raw_text)
+           if cleaned_text.strip():
+                print("✅ OCR erfolgreich, Text extrahiert.")
+           else:
+               print("⚠️ Auch nach OCR konnte kein Text extrahiert werden.")
+
+        except Exception as oe:
+            raise ValueError(f"❌ OCR-Fehler: {oe}")
 
     if not cleaned_text.strip():
         raise ValueError("❌ Es konnte kein sinnvoller Text aus der PDF extrahiert werden.")
     
-    print("✅ Die Stellenauschreibung wurde erkannt.")
-
-    return cleaned_text
+    print("✅ Die Stellenausschreibung wurde erkannt.")
+    return cleaned_text, ocr_pdf_path
 
 def _get_cache_path(key: str) -> str:
         return os.path.join(CACHE_DIR, f"{key}.txt")
@@ -229,16 +267,45 @@ def reduce_pdf_to_essentials(text: str, pdf_path : str, cache_key: str) -> str:
     """
     Reduziert den PDF-Text auf das Wesentliche via ChatGPT, mit einfachem Cache.
     """
-    # Ein Key: entweder aus Dateiname oder Hash des Inhalts
-    
     prompt = (
-        "Hier ist der Text einer Stellenanzeige. Fasse die Anzeige in 5–10 Bullet Points zusammen "
-        "mit Fokus auf die wichtigsten Anforderungen, Aufgaben und Qualifikationen. "
-        "Lass irrelevante Informationen weg (z. B. Selbstbeschreibungen des Unternehmens):\n\n"
-        f"{text}"
+        "Ich gebe dir eine Stellenanzeige:\n\n"
+        f"{text}\n\n"
+        "Bitte fasse diesen Text präzise zusammen und hebe **besonders** die technischen Anforderungen hervor, "
+        "insbesondere:\n"
+        "- Programmiersprachen und Versionen\n"
+        "- Frameworks und Bibliotheken\n"
+        "- Tools und Plattformen\n"
+        "- Schnittstellen oder APIs und Protokolle\n"
+        "- Tätigkeitsbereich des Unternehmens\n\n"
+        "Die Zusammenfassung soll in Stichpunkten erfolgen."
     )
 
-    validate_prompt_length(prompt)
+    prompt_length_bool = validate_prompt_length(text)
+    
+    if not prompt_length_bool:
+        chunks = chunk_text_by_tokens(text)
+        for chunk in chunks:
+            reduced = ""
+            prompt = (
+            f"Ich gebe dir einen Auszug aus einer Stellenanzeige:\n\n"
+            f"{chunk}\n\n"
+            "Bitte fasse diesen Text präzise zusammen und hebe **besonders** die technischen Anforderungen hervor, "
+            "insbesondere:\n"
+            "- Programmiersprachen und Versionen\n"
+            "- Frameworks und Bibliotheken\n"
+            "- Tools und Plattformen\n"
+            "- Schnittstellen oder APIs und Protokolle\n"
+            "- Tätigkeitsbereich des Unternehmens\n\n"
+            "Die Zusammenfassung soll in Stichpunkten erfolgen."
+        )
+            chunk_reduced = ask_chatgpt_single_prompt(prompt)
+            reduced = reduced + " " + chunk_reduced
+
+            save_cached_reduction(cache_key, reduced)
+
+            print("✅ PDF-Inhalt wurde erfolgreich reduziert.")
+            return reduced
+
     reduced = ask_chatgpt_single_prompt(prompt)
 
     save_cached_reduction(cache_key, reduced)
@@ -246,22 +313,129 @@ def reduce_pdf_to_essentials(text: str, pdf_path : str, cache_key: str) -> str:
     print("✅ PDF-Inhalt wurde erfolgreich reduziert.")
     return reduced
 
+def get_pdf_page_count(pdf_path: str) -> int:
+    """Zählt die Seiten einer PDF."""
+    with pdfplumber.open(pdf_path) as pdf:
+        return len(pdf.pages)
+
+def extract_headings_from_pdf(pdf_path: str) -> list[str]:
+    """
+    Liest jede Seite mit pdfplumber ein, splittet sie in Zeilen
+    und sammelt alle Zeilen, die mit „Zahl. Text“ beginnen.
+    """
+    headings: list[str] = []
+    with pdfplumber.open(pdf_path) as pdf:
+        for page in pdf.pages:
+            text = page.extract_text() or ""
+            for line in text.split("\n"):
+                clean = line.strip()
+                # Regex: Zeilenanfang, Zahl+, optional weitere .Ziffern, Punkt, mindestens ein Leerzeichen, dann Text
+                if re.match(r'^\d+(?:\.\d+)*\.\s+\S+', clean):
+                    headings.append(clean)
+    return headings
+
+def select_best_heading(headings):
+    """
+    Fragt ChatGPT, welche Heading(s) am relevantesten für die Stellenanzeige sind.
+    Liefert eine ganz normale Python-Liste von Kapitel-Titeln zurück.
+    """
+    # 1) Inhaltsverzeichnis als Bullet-Point-Liste für den Prompt aufbauen
+    toc = "\n".join(f"- {h}" for h in headings)
+    prompt = (
+        "Die PDF enthält folgende Kapitelüberschriften:\n"
+        f"{toc}\n\n"
+        "Welche dieser Überschriften sind essentiell für die Anforderungen und Qualifikation des "
+        "Personals im Projekt? Bitte antworte **nur** mit den exakten Kapitel-Titeln, jeder Titel "
+        "in einer neuen Zeile. Du darfst dafür '-' voranstellen oder weglassen."
+    )
+
+    # 2) ChatGPT fragen
+    raw = ask_chatgpt_single_prompt(prompt).strip()
+
+    # 3) Antwort in Zeilen splitten und leerzeilen herausfiltern
+    lines = [line.strip() for line in raw.splitlines() if line.strip()]
+
+    # 4) führendes "- " entfernen (falls vorhanden) und saubere Liste sammeln
+    result = []
+    for line in lines:
+        if line.startswith("-"):
+            result.append(line.lstrip("- ").strip())
+        else:
+            result.append(line)
+    return result
+
+def extract_chapter_text(full_text, chosen, all_headings):
+    """
+    Schneidet aus full_text nur den Abschnitt heraus, der zu `chosen` gehört.
+    Wenn `chosen` eine Liste von Überschriften ist, werden alle entsprechenden
+    Abschnitte extrahiert und hintereinander gehängt.
+    """
+    def _extract_one(text, heading, headings):
+        # Split vor der gewählten Überschrift
+        parts = re.split(rf'(?m)^{re.escape(heading)}.*$', text, maxsplit=1)
+        if len(parts) < 2:
+            return ""
+        after = parts[1]
+        # Finde Position der nächsten Überschrift
+        others = [h for h in headings if h != heading]
+        if others:
+            nxt_pattern = rf'(?m)^({"|".join(re.escape(h) for h in others)})'
+            m = re.search(nxt_pattern, after)
+            if m:
+                return after[:m.start()].strip()
+        return after.strip()
+
+    # Handle list of headings
+    if isinstance(chosen, (list, tuple)):
+        sections = []
+        for heading in chosen:
+            sec = _extract_one(full_text, heading, all_headings)
+            if sec:
+                sections.append(sec)
+        return "\n\n".join(sections)
+
+    # Single heading
+    return _extract_one(full_text, chosen, all_headings)
+
 def process_pdf(pdf_path: str) -> str:
     """
-    Verwendet zunächst den gecachten Digest (Hash) der PDF, falls vorhanden.
-    Nur wenn noch keine Zusammenfassung existiert,
-    wird die PDF eingelesen, reduziert und gespeichert.
+    - Nutzt Cache, sofern vorhanden.
+    - Liest PDF, falls ≤3 Seiten: Volltext → reduce.
+    - Falls >3 Seiten: sucht Kapitel, fragt ChatGPT, extrahiert bestes Kapitel → reduce.
     """
-    # 1) Key bestimmen anhand des Datei-Hashes
+    # 1) Cache-Key prüfen
     key = make_key_from_file(pdf_path)
-
-    # 2) Cache prüfen
     cached = load_cached_reduction(key)
-    if cached:
-        print(f"🔄 Verwende gecachte Reduktion für Schlüssel {key}.")
+    if cached is not None:
         return cached
 
-    # 3) PDF neu verarbeiten und Zusammenfassung speichern
-    pdf_text     = extract_clean_text_from_pdf(pdf_path)
-    reduced_text = reduce_pdf_to_essentials(pdf_text, pdf_path, cache_key=key)
-    return reduced_text
+    # 2) PDF öffnen und Volltext sammeln
+    full_text, ocr_pdf_path = extract_clean_text_from_pdf(pdf_path)
+    token_count = count_tokens(full_text)
+    
+    # 3) Bei kurzen PDFs: direkt reduzieren
+    if token_count <= 2000:
+        reduced = reduce_pdf_to_essentials(full_text, pdf_path, cache_key=key)
+        save_cached_reduction(key, reduced)
+        return reduced
+
+    # 4) Bei langen PDFs: Kapitel-Handling
+    if ocr_pdf_path:
+        headings = extract_headings_from_pdf(ocr_pdf_path)
+    else:
+        headings = extract_headings_from_pdf(pdf_path)
+
+    if not headings:
+        # Falls keine Kapitel gefunden: wie Kurz-PDF behandeln
+        reduced = reduce_pdf_to_essentials(full_text, pdf_path, cache_key=key)
+        
+    if headings:
+        best = select_best_heading(headings)
+        #print(f"ℹ️ Wähle Kapitel „{best}“ für Reduktion.")
+        full_text = extract_chapter_text(full_text, best, headings)
+        reduced = reduce_pdf_to_essentials(full_text, pdf_path, cache_key=key)
+    
+    # 5) Dieses Kapitel reduzieren und cachen
+    save_cached_reduction(key, reduced)
+    return reduced
+

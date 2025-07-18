@@ -87,17 +87,31 @@ def add_dataframe_to_chroma(df: pd.DataFrame, collection, source_id: str = "resu
 def query_relevant_entries(collection, query: str, n_results: int = 5) -> list[str]:
     """
     Fragt die Chroma-Collection nach den relevantesten Dokumenten zur gegebenen Anfrage ab.
+    Technologische Anforderungen und Frameworks werden automatisch mitgewichtet.
     """
-    # DEBUG: Anzahl aller gespeicherten Dokumente
+    # 1) Debug: Anzahl aller gespeicherten Dokumente
     all_objs = collection.get(include=["documents"])
     total = len(all_objs.get("documents", []))
     if total == 0:
         print("DEBUG: Collection ist leer, keine Abfrage möglich.")
         return []
 
-    # eigentliche Suche
-    results = collection.query(query_texts=[query], n_results=n_results)
+    # 2) Automatisch eingebauter Fokus auf Technologie/Themen
+    tech_focus = (
+        "Bitte berücksichtige bei der Suche besonders technische Anforderungen "
+        "und eingesetzte Frameworks und Tools (z.B. Python, Django, Docker, React)."
+    )
+    # Den originalen Suchtext dahinter hängen
+    augmented_query = f"{tech_focus}\n\n{query}"
+
+    # 3) Vektor-Suche durchführen
+    results = collection.query(
+        query_texts=[augmented_query],
+        n_results=n_results
+    )
     docs = results.get("documents", [[]])[0]
+
+    # 4) Duplikate entfernen und leere Einträge filtern
     unique_docs = list(dict.fromkeys(doc.strip() for doc in docs if doc.strip()))
     return unique_docs
 
@@ -138,7 +152,6 @@ def validate_retrieved_docs(docs):
     return True
 
 def csv_to_db(csv_files: list, persist_dir: str = persist_dir, new_data: bool = True):
-    print(new_data)
     if new_data:
         # Chroma-Collection erzeugen
         collection = create_collection(

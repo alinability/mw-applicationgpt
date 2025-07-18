@@ -1,0 +1,6 @@
+- Stellenanzeige für eine Position in einem technologieorientierten Unternehmen
+- Gesucht wird ein erfahrener Softwareentwickler mit fundierten Kenntnissen in verschiedenen Programmiersprachen wie Java, Python und JavaScript
+- Erfahrung mit Frameworks wie Spring, Django und React sowie mit Bibliotheken wie jQuery und Bootstrap erforderlich
+- Kenntnisse in der Arbeit mit Tools wie Git, Docker und Jenkins sowie Plattformen wie AWS und Azure von Vorteil
+- Erfahrung in der Entwicklung von Schnittstellen und APIs sowie im Umgang mit Protokollen wie REST und SOAP notwendig
+- Tätigkeitsbereich des Unternehmens umfasst die Entwicklung von Softwarelösungen für verschiedene Branchen und Anwendungsgebiete

@@ -3,6 +3,19 @@ import os
 
 DEFAULT_MODEL = "gpt-3.5-turbo"
 
+def chunk_text_by_tokens(text, max_tokens =  4096, model="gpt-3.5-turbo"):
+    """
+    Zerschneidet `text` in Chunks mit jeweils bis zu `max_tokens` Tokens.
+    Gibt eine normale Python-Liste mit den Chunks zurück.
+    """
+    enc = tiktoken.encoding_for_model(model)
+    token_ids = enc.encode(text)
+    chunks = []
+    for i in range(0, len(token_ids), max_tokens):
+        part_ids = token_ids[i : i + max_tokens]
+        chunks.append(enc.decode(part_ids))
+    return chunks
+
 def count_tokens(text: str, model: str = DEFAULT_MODEL) -> int:
     """
     Zählt die Tokens eines Strings basierend auf dem Modell.

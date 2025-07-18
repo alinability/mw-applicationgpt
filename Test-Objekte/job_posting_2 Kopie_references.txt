@@ -1,0 +1,124 @@
+=== Reduced Text ===
+- Festanstellung als Scrum Master für Funkkommunikationssysteme im SAFe-Kontext in Stuttgart
+- Leitung und Moderation von Agile-Meetings, Coaching von Teammitgliedern in Agile-Prinzipien
+- Unterstützung des Product Owners bei der Priorisierung des Backlogs und Verfassen klarer Storys
+- Definition von Done und Ready, Identifizierung von Abhängigkeiten und proaktives Lösen von Blockaden
+- Überwachung der Velocity des Teams und inkrementelle Lieferung von User Stories
+- Enge Zusammenarbeit im SAFe-Kontext mit dem Release Train Engineer und anderen Scrum Mastern
+- Abgeschlossenes Studium in Ingenieurwissenschaften, Informatik oder ähnlicher Qualifikation
+- Mindestens 3 Jahre Erfahrung als Scrum Master, Zertifizierung von Vorteil
+- Kenntnisse in objektorientierter Softwareentwicklung (C++, Python, Yocto) wünschenswert
+- Erfahrung im SAFe-Framework und Fähigkeit, in einem skalierten agilen Umfeld zu arbeiten
+- Sehr gute mündliche und schriftliche Deutschkenntnisse erforderlich
+
+=== Retrieved Documents ===
+1. Web-Plattform zur Planung, Kalkulation und Umsetzung von Sanitärprojekten 2 08/2017 – 02/2018 Sanitär- und Handwerksbranche Badnet GmbH Hybrid Agile Scrum Master, Kundenbetreuer 9 Medium Jira, Confluence, Git Design Thinking, Scrum BADnet benötigte eine digitale Plattform, die die Planung, Kalkulation und Umsetzung von Sanitärprojekten auf Basis konfigurierbarer Standardmodule ermöglicht. Ziel war es, den Planungsprozess zu digitalisieren und durch die weitgehende Vorfertigung der Module die Effizienz der Projektumsetzung zu steigern. Dies sollte es Handwerksbetrieben ermöglichen, mit weniger Personal mehr Projekte gleichzeitig abzuwickeln, den Fachkräftemangel zu kompensieren und gleichzeitig die Kunden durch visuelle 3D-Planungen enger in den Prozess einzubinden. Einführung und Anwendung agiler Methoden (Scrum) im gesamten Projektteam.
+Leitung von Scrum-Ritualen wie Daily Standups, Sprint-Planungen und Retrospektiven.
+Koordination der Entwicklungsteams und Sicherstellung der termingerechten Lieferung von Produktinkrementen.
+Enge Abstimmung mit dem Kunden zur kontinuierlichen Anforderungsklärung und Priorisierung. Unterstützung bei der Erstellung der Produktvision und der funktionalen Anforderungen.
+Qualitätssicherung und Prüfung der umgesetzten Features vor der Abnahme durch den Kunden. Entwicklung einer vollständig funktionalen Web-Plattform zur Konfiguration von Standardmodulen für Sanitärprojekte.
+Optimierung des Planungsprozesses und der Kalkulation für Handwerksbetriebe.
+Steigerung der Effizienz der Projektumsetzung durch weitgehende Vorfertigung von Modulen. Sicherstellung der Usability der Plattform für Kunden, Handwerksunternehmen und Planer.
+Management der kontinuierlichen Anforderungsänderungen während der Entwicklung. German Web-Plattform, Prozessdigitalisierung, Scrum, Agile Methoden, Jira, Sanitärbranche, Standardmodule, Handwerksbetriebe, Plattformentwicklung, Kundenkommunikation
+
+2. Enterprise Agile Coach – Agile Transformation der Handels-IT bei EnBW 5 05/2022 – 01/2024 Energiewirtschaft, Handels-IT, Agile Transformation EnBW Hybrid Agile Enterprise Agile Coach 160 (~25 Teams) High Azure DevOps, MSTeams, Power Point, Excel, Sharepoint, Word, Conceptboard SAFe, Scrum, PI Planning, Scrum Master Chapter, Azure DevOps, Backlog-Management, Flow Metrics, Abhängigkeits-Tracking, Risiko-Mitigation, Prozessvisualisierung, Workshop-Moderation Der Energiehandel der EnBW benötigte eine effiziente und transparente Steuerung der Handels-IT. Ziel war die Einführung eines skalierten agilen Vorgehensmodells basierend auf SAFe, um Abhängigkeiten zu klären, Risiken zu mitigieren und die Zusammenarbeit der Teams zu verbessern.
+
+Durch die Einführung von transparenzfördernden KPIs wie Kundenzufriedenheit (CSAT) und Team Health Checks sowie agilen Metriken wie Cycle Time, Lead Time und Flow Efficiency wurde die Leistungsfähigkeit der Teams messbar. Das quartalsbasierte Planungsevent förderte eine strukturierte Roadmap-Planung und die clusterübergreifende Abstimmung, wodurch Effizienz und bereichsübergreifende Zusammenarbeit nachhaltig verbessert wurden. Entwurf und Implementierung eines skalierten agilen Vorgehensmodells für die Handels-IT basierend auf SAFe-Best-Practices.
+Harmonisierung des Portfoliomanagements und des Backlog-Managements für alle Teams der Handels-IT.
+Verantwortung für das Scrum Master Chapter: Beratung und Coaching der Scrum Master und Sicherstellung der einheitlichen Prozessnutzung in allen Teams.
+Coaching der Führungskräfte (L1-L3), insbesondere der Cluster-Führungskräfte, zur Einführung agiler Arbeitsmethoden.
+Einführung und Konfiguration von Azure DevOps: Aufbau von Namenskonventionen, Backlog-Strukturen, Vorlagen und Dashboards.
+Definition von Prozessen zur Risiko-Mitigation und Abhängigkeits-Management: Entwicklung von Methoden und Tools zur Risikomitigation und Priorisierung in der Quartalsplanung.
+Moderation und Durchführung des clusterübergreifenden Quartalsplanungsevents: Planung, Moderation und kontinuierliche Optimierung des Events, bei dem alle Teams ihre Roadmaps erstellen und Abhängigkeiten auflösen.
+Schulungs- und Trainingsangebote: Entwicklung und Durchführung von Schulungen zu den Themen Backlog-Management, agile Schätzmethoden und Portfolio-Management.
+Einführung von KPIs zur Messung der Kundenzufriedenheit (CSAT) und der Teamzufriedenheit zur Erfolgskontrolle und Prozessoptimierung.
+Etablierung verpflichtender agiler Metriken (z. B. Cycle Time, Lead Time, Flow Efficiency und Burnup/Burndown-Charts) zur Unterstützung der Teamsteuerung und Prozessverbesserung. Schulungsentwicklung: Entwurf und Durchführung von Schulungsmaterial für die Einführung von agilen Methoden und Prozessen im Bereich Backlog-Management und Schätzmethoden.
+Einführung von Prozessvorlagen: Entwicklung von Dokumentationstemplates für Risikoanalyse, Backlog-Management und Release-Planung.
+Soziale Komponenten: Konzeption und Moderation der Netzwerkaktivitäten während des Quartalsplanungsevents, um die bereichsübergreifende Zusammenarbeit zu fördern. Skalierter agiler Prozess für die Handels-IT der EnBW eingeführt: Teams konnten abteilungsübergreifend nach einem einheitlichen Vorgehensmodell arbeiten.
+Implementierung eines quartalsbasierten Planungsevents: Dieses Event, inspiriert von PI Planning, wird clusterübergreifend alle 3 Monate durchgeführt, um die Roadmap, Abhängigkeiten und Risiken für die kommenden Quartale zu klären.
+Harmonisierung der Backlog- und Namenskonventionen in Azure DevOps, wodurch die Produktivität der Teams gesteigert wurde.
+Höhere Team-Autonomie und Verantwortungsübernahme durch Coaching der Scrum Master und Führungskräfte.
+Bessere Risiko- und Abhängigkeitskontrolle durch standardisierte Prozesse und kontinuierliche Moderation.
+Messbare Kundenzufriedenheit (CSAT) und Team Health Checks: Einführung von Metriken zur Messung der Zufriedenheit der Stakeholder und Teammitglieder sowie zur Verbesserung der Prozesse.
+Einheitliche agile Metriken für alle Teams: Einführung von Cycle Time, Lead Time, Burnup/Burndown-Charts und anderen Metriken zur transparenten Steuerung der Teams. Synchronisation der Teams im Quartalsplanungsevent: Sicherstellung der bereichsübergreifenden Abstimmung von Abhängigkeiten und Risiken zwischen den Teams.
+Technische Implementierung von Azure DevOps: Einführung von einheitlichen Backlog- und Namenskonventionen sowie Schulung der Teams zur effektiven Nutzung der Plattform.
+Führungskräfte-Coaching: Anpassung der agilen Führungskompetenzen auf L1-L3-Führungskräfte-Ebene (C-Level, Bereichsleiter, Abteilungsleiter) und Schulung der Methoden zur Steuerung agiler Prozesse.
+Harmonisierung des Backlog-Managements: Einheitliche Priorisierung und Vermeidung von Inkonsistenzen über die verschiedenen Cluster hinweg.
+Messbarkeit der Kundenzufriedenheit: Etablierung von CSAT-Metriken zur kontinuierlichen Messung der Zufriedenheit der internen und externen Stakeholder. English Enterprise Agile Coach, Agile Transformation, SAFe, Scrum, Scrum Master Chapter, Portfolio-Management, Prozessoptimierung, Abhängigkeitsmanagement, Risikomanagement, Backlog-Management, Azure DevOps, Flow Metrics, Release-Planung, PI Planning, Führungskräfte-Coaching, Workshop-Moderation, Netzwerkaufbau, Team Health Checks, Kundenzufriedenheit, KPI-Dashboards, agile Metriken, Transparenz
+
+3. Release Train Engineer (RTE) – Einführung skalierter agiler Prozesse in der Handels-IT bei EnBW 5 10/2022 – heute Energiewirtschaft, Handels-IT, Agile Transformation EnBW Hybrid 125 €/h Agile Release Train Engineer (RTE) 5 Medium Azure DevOps, MSTeams, Power Point, Excel, Sharepoint, Word, Conceptboard SAFe, Scrum,  PI Planning, Backlog-Management, Flow Metrics, Workshop-Moderation Parallel zu meiner Rolle als Enterprise Agile Coach war es wichtig, die Ergebnisse dieser Tätigkeit direkt in einem Cluster der Handels-IT zu implementieren und weiterzuentwickeln. Ziel war es, von Anfang an ein iteratives Vorgehen bei der Einführung der skalierten Agilität zu leben.
+
+Die Ausgangssituation war geprägt von inkonsistenten Prozessen und Werkzeugen innerhalb der Teams. Die einzelnen Teams arbeiteten nach unterschiedlichen Methoden, mit verschiedenen Tools und ohne standardisierte Prozesse. Dies führte zu einer fragmentierten Arbeitsweise und einer erschwerten Synchronisation der Roadmaps über die Teams hinweg. Einführung der skalierten agilen Methoden im Cluster und Sicherstellung der Umsetzung in 5 Teams
+Coaching der Scrum Master bei der Einführung agiler Methoden und Nutzung von Tools (z. B. Azure DevOps)
+Überwachung der Einhaltung der Prozesse und Korrekturmaßnahmen bei Abweichungen
+Inhaltliche Vorbereitung der Teams für die Quartalsplanung (Backlogs auf Feature-Ebene, Priorisierung, Commitments)
+Durchführung von Checkpunkten während der Planung zur Überprüfung des Fortschritts der Teams
+Unterstützung der Teams bei der Synchronisation ihrer Roadmaps und der Abstimmung von Abhängigkeiten
+Statusüberprüfung der Teams während der Planungstage und Sicherstellung des Abschlusses der Roadmaps
+Stakeholder-Kommunikation: Enges Reporting an die Führungskräfte und die Stakeholder zu den Fortschritten der Planung und den Abhängigkeiten der Teams.
+Workshop-Moderation: Durchführung von Workshops zur Abstimmung der Roadmap und zur Verbesserung der Teamzusammenarbeit.
+Betreuung der Teams während des Quartals: Unterstützung der Teams bei der Umsetzung und Anpassung ihrer Roadmaps
+Justierung der Roadmaps: Sicherstellung, dass die Roadmaps während des Quartals an Veränderungen angepasst werden Organisation von Schulungsmaterialien: Erstellung von Schulungsmaterialien und Vorlagen zur Unterstützung der Teams bei der Roadmap-Erstellung, Backlog-Management und Priorisierung.
+Organisation der Quartalsplanung (Räume, Catering, Besucheranmeldung) in Abstimmung mit dem Backoffice Harmonisierte agile Prozesse und vereinheitlichte Arbeitsweisen in 5 Teams
+Einführung einer klaren, standardisierten Quartalsplanung mit synchronisierten Team-Roadmaps
+Verbesserung der Synchronisation zwischen den Teams durch regelmäßige Status-Checkpunkte
+Effizientere Organisation der Planungstage durch frühzeitige Abstimmung mit dem Backoffice
+Reduzierung von Verzögerungen durch proaktives Abhängigkeitsmanagement und Risikomitigation
+Höhere Transparenz und Effizienz durch abgestimmte Feature-Roadmaps mit klaren Commitments und Prioritäten
+Effektive Unterstützung der Scrum Master und Multiplikation der agilen Prinzipien im Cluster
+Kontinuierliche Betreuung der Teams während des Quartals zur Sicherstellung der Umsetzung der Roadmaps
+Erfolgreiche Justierung der Roadmaps während des Quartals bei Änderungen der Prioritäten oder unerwarteten Ereignissen Synchronisation der Teams im Cluster: Sicherstellen, dass alle Teams ihre Roadmaps synchronisieren, ohne den Fortschritt der anderen Teams zu behindern.
+Logistische Komplexität der Quartalsplanung: Sicherstellen der Verfügbarkeit von Räumen, Equipment und Catering in Abstimmung mit dem Backoffice.
+Monitoring der Teams während der Planungstage: Sicherstellen, dass alle Teams ihre Roadmaps innerhalb der Planungszeit abschließen und ihre Ergebnisse präsentieren.
+Motivation der Teams bei der Einführung der Prozesse: Einige Teams waren zunächst skeptisch gegenüber der Einführung der neuen Methoden und Tools. English Release Train Engineer, RTE, SAFe, Scrum, Agile Transformation, Cluster, Roadmap-Management, PI Planning, Event-Organisation, Logistik, Backlog-Management, Coaching, Monitoring, Harmonisierung von Prozessen, Abhängigkeitsmanagement, Status-Checkpunkte, Feature-Roadmap
+
+4. Agile Coach – Einführung der skalierten Agilität und DevOps-Kultur in zwei Teams 5 01/2024 – heute Energiewirtschaft, Handels-IT, Agile Transformation EnBW Hybrid 125 €/h Agile Agile Coach 26 Medium Power Point, Excel, Azure DevOps, MSTeams, Conceptboard, ChatGPT Scrum, SAFe, Kanban, DevOps, Offshore-Kooperation, Backlog-Management, Workshop-Moderation, Flow Metrics, Agile Metrics, Compliant Sourcing Zwei Teams im Cluster der Handels-IT hatten Schwierigkeiten, die im Rahmen der skalierten agilen Arbeitsweise entwickelten neuen Vorgehensmodelle und Prozesse eigenständig umzusetzen. Die Teams hatten Probleme, klare Prioritäten, Abhängigkeiten und Commitments im Backlog abzubilden und zu verfolgen. Die operative Arbeitsweise war durch hohe Parallelität zwischen Entwicklung und Betrieb geprägt, wodurch es regelmäßig zu Überlastungen der Teams kam. Zudem fehlte es an Transparenz gegenüber dem Management und den Stakeholdern, was die Nachverfolgbarkeit des Fortschritts und der Prioritäten erschwerte. Gleichzeitig bestand die Anforderung, die DevOps-Kultur zu fördern, um eine nahtlose Entwicklung neuer Features sowie die Sicherstellung eines stabilen Betriebs zu ermöglichen. Aufbau und Pflege einer klaren Backlogstruktur mit Prioritäten, Abhängigkeiten und Commitments
+Coaching der Teammitglieder, Projektleiter und Stakeholder zur Einführung agiler Arbeitsweisen und Tools
+Einführung der DevOps-Kultur zur parallelen Unterstützung von Feature-Entwicklung und stabilem Betrieb
+Einführung und Moderation von Scrum-Regelterminen (Dailys, Reviews, Retros) zur Synchronisation der Teams
+Einführung der Hybrid-Methodik (Scrum, SAFe, Kanban) zur Synchronisation der übergeordneten Planung und operativen Themen
+Einführung von KPIs zur kontinuierlichen Verbesserung der Teamperformance und Erkennung von Engpässen
+Etablierung klarer Rollen und Verantwortlichkeiten im Team zur Trennung der Aufgaben zwischen Entwicklung und Betrieb
+Durchführung gezielter Workshops zur Teamentwicklung und Verbesserung der Teamdynamik Tiefgehende Bedarfsanalyse durch Zuhören und Befragung von Stakeholdern, Teammitgliedern und Projektleitern, um die wichtigsten Bedürfnisse und Herausforderungen zu identifizieren
+Entwurf eines Zusammenarbeitsmodell (aka. Agilitätsorientiertes Kommunikationsmodell) in s.g. Mixed Teams (intern + extern) welches den Auflagen des „Compliant Sourcing“ genügt. Transparenz durch ein klares und strukturiertes Backlog mit Prioritäten, Abhängigkeiten und Commitments
+Verbesserung der Zusammenarbeit mit Stakeholdern durch regelmäßig synchronisierte Reviews und Priorisierungsmeetings
+Einführung der DevOps-Kultur, die die parallele Entwicklung neuer Features und den operativen Betrieb ermöglicht
+Erhöhte Teamproduktivität durch klare Trennung von Betriebsaufgaben und Entwicklungsaufgaben
+Synchronisierung der Teams durch die Einführung der Hybrid-Methodik (Scrum, SAFe, Kanban) zur Harmonisierung operativer und strategischer Themen
+Kontinuierliche Verbesserung durch Einführung von KPIs zur Überwachung der Teamperformance
+Klare Verantwortlichkeiten und verbesserte Rollenklarheit im Team, wodurch Missverständnisse und Überlastungen reduziert wurden
+Höhere Teamzufriedenheit und stärkere Selbstorganisation der Teams durch gezielte Teamentwicklungs-Workshops Einführung der DevOps-Kultur, um die gleichzeitige Entwicklung und den stabilen Betrieb sicherzustellen
+Trennung von operativen und Entwicklungsaufgaben zur Reduktion der Parallelbelastung der Entwickler
+Einführung von Scrum, SAFe und Kanban als Hybrid-Methodik, was einen kulturellen Wandel in den Teams erforderte
+Synchronisation mit Offshore-Teams und Sicherstellung der Kommunikation zwischen lokalen und Offshore-Teammitgliedern
+Schaffung von Transparenz gegenüber Management und Stakeholdern durch klare Darstellung des Fortschritts und der Prioritäten English, German Agile Coach, DevOps-Kultur, Scrum, SAFe, Kanban, Backlog-Management, Team-Coaching, Stakeholder-Management, Teamdynamik, KPI-Einführung, Offshore-Koordination, Teamentwicklung, Hybrid-Methodik, Feature-Entwicklung, operativer Betrieb, Compliant Sourcing
+
+5. Technische Projektleitung für MBGuides Version 2.0 - inloop GmbH 5 09/2015 – 03/2018 Automotive - Aftersales Daimler AG (Mercedes Benz) Hybrid App Solution Architect, Technical Project Management, Technical Lead 10 High Git, Slack, PowerPoint, Scrum, CSS, JavaScript, Xcode, Android Studio, Jira, Confluence, ALM, Jenkins Technische Konzeption, Nearshore, Mobile App Testing, HTML, CSS, JSON, Scrum Als technischer Projektleiter war ich für die Umsetzung der Version 2.0 der MBGuides App für iOS und Android sowie die Weiterentwicklung der Workbench zur inhaltlichen Pflege verantwortlich. Die Umsetzung erfolgte durch ein Nearshore-Team aus der Slowakei, das ich koordinierte. Technische Konzeption der gesamten Lösung (Apps und Workbench).
+Kundenpräsentationen und Vertretung der technischen Lösung vor dem Auftraggeber.
+Steuerung eines Nearshore-Teams, inklusive Kommunikation über Slack und Git.
+Direkte Umsetzung neuer Features, insbesondere des „Smart Layouts“ in Zusammenarbeit mit der Design-Abteilung von Daimler.
+Anpassung der HTML-Inhalte und Styling mit CSS und JavaScript.
+Koordination von Scrum-Sprints und Qualitätssicherung. Beheben von Bugs in den Apps und HTML-Seiten, wenn nötig.
+Intensive Workshops mit der Design-Abteilung für Layout-Optimierungen.
+Erstellung von Präsentationen für das Management zur Abstimmung und Berichterstattung. Erfolgreiche Veröffentlichung der Version 2.0 der MBGuides App in den AppStores für iOS und Android.
+Fertigstellung der Lösung innerhalb des vereinbarten Budgets, Zeitrahmens und mit hoher Qualität.
+Steigerung der Nutzerzufriedenheit und positive Rückmeldungen vom Auftraggeber. Steuerung eines Nearshore-Teams über verschiedene Standorte hinweg.
+Intensive Anpassungen im „Smart Layout“ zur Optimierung der Nutzererfahrung und Implementierung von Designanforderungen. English Automotive, Mobile Apps, Nearshore-Teamführung, Scrum, CSS, JavaScript, Nutzerzufriedenheit, AppStore, Technische Konzeption, Stakeholder-Management, HTML, App-Optimierung, Designintegration
+
+=== Response ===
+<li>
+  <strong>Enterprise Agile Coach – Agile Transformation der Handels-IT bei EnBW</strong><br>
+  <em>05/2022 – 01/2024</em><br>
+  Einführung eines skalierten agilen Vorgehensmodells basierend auf SAFe, Harmonisierung des Portfoliomanagements und Backlog-Managements, Schulungsangebote und Einführung von KPIs.
+</li>
+<li>
+  <strong>Release Train Engineer (RTE) – Einführung skalierter agiler Prozesse in der Handels-IT bei EnBW</strong><br>
+  <em>10/2022 – heute</em><br>
+  Einführung der skalierten agilen Methoden im Cluster, Coaching der Scrum Master, Harmonisierung des Backlog-Managements und Durchführung des quartalsbasierten Planungsevents.
+</li>
+<li>
+  <strong>Agile Coach – Einführung der skalierten Agilität und DevOps-Kultur in zwei Teams</strong><br>
+  <em>01/2024 – heute</em><br>
+  Technische Konzeption, Backlog-Management, Team-Coaching, Stakeholder-Management, KPI-Einführung, Offshore-Koordination, Teamentwicklung.
+</li>
+

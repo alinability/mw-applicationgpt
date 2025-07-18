@@ -1,0 +1,107 @@
+=== Reduced Text ===
+- Techlead Softwarentwicklung (m/w/d) in München oder 10% Remote
+- Leitung des Entwicklungsteams als Techlead, keine Managementaufgaben
+- Einarbeitung in objektorientierte Programmiersprache ABL
+- Festsetzung und Umsetzung von technischen Entscheidungen
+- Analyse und Modernisierung der Softwarearchitektur
+- Abgeschlossenes Studium der Informatik/Wirtschaftsinformatik oder vergleichbare Berufserfahrung
+- Entwicklungserfahrung mit objektorientierten Programmiersprachen wie Python, .Net oder Java
+- Bereitschaft zur Einarbeitung in Progress OpenEdge und ABL
+- Knowhow in modernen Softwarearchitekturen (cloud-native, eventgetrieben, serviceorientiert)
+- Fließende Deutschkenntnisse und gute Englischkenntnisse
+
+=== Retrieved Documents ===
+1. Technische Projektleitung für MBGuides Version 2.0 - inloop GmbH 5 09/2015 – 03/2018 Automotive - Aftersales Daimler AG (Mercedes Benz) Hybrid App Solution Architect, Technical Project Management, Technical Lead 10 High Git, Slack, PowerPoint, Scrum, CSS, JavaScript, Xcode, Android Studio, Jira, Confluence, ALM, Jenkins Technische Konzeption, Nearshore, Mobile App Testing, HTML, CSS, JSON, Scrum Als technischer Projektleiter war ich für die Umsetzung der Version 2.0 der MBGuides App für iOS und Android sowie die Weiterentwicklung der Workbench zur inhaltlichen Pflege verantwortlich. Die Umsetzung erfolgte durch ein Nearshore-Team aus der Slowakei, das ich koordinierte. Technische Konzeption der gesamten Lösung (Apps und Workbench).
+Kundenpräsentationen und Vertretung der technischen Lösung vor dem Auftraggeber.
+Steuerung eines Nearshore-Teams, inklusive Kommunikation über Slack und Git.
+Direkte Umsetzung neuer Features, insbesondere des „Smart Layouts“ in Zusammenarbeit mit der Design-Abteilung von Daimler.
+Anpassung der HTML-Inhalte und Styling mit CSS und JavaScript.
+Koordination von Scrum-Sprints und Qualitätssicherung. Beheben von Bugs in den Apps und HTML-Seiten, wenn nötig.
+Intensive Workshops mit der Design-Abteilung für Layout-Optimierungen.
+Erstellung von Präsentationen für das Management zur Abstimmung und Berichterstattung. Erfolgreiche Veröffentlichung der Version 2.0 der MBGuides App in den AppStores für iOS und Android.
+Fertigstellung der Lösung innerhalb des vereinbarten Budgets, Zeitrahmens und mit hoher Qualität.
+Steigerung der Nutzerzufriedenheit und positive Rückmeldungen vom Auftraggeber. Steuerung eines Nearshore-Teams über verschiedene Standorte hinweg.
+Intensive Anpassungen im „Smart Layout“ zur Optimierung der Nutzererfahrung und Implementierung von Designanforderungen. English Automotive, Mobile Apps, Nearshore-Teamführung, Scrum, CSS, JavaScript, Nutzerzufriedenheit, AppStore, Technische Konzeption, Stakeholder-Management, HTML, App-Optimierung, Designintegration
+
+2. Fachliche und disziplinarische Führung des Softwareentwicklungsteams (Web & Mobile Applications) 5 01/2019 – 04/2022 Fashion Retail Hugo Boss Hybrid Leadership Teamleiter 11 Medium Jira, Confluence, PowerPoint, Excel, Slack, MSTeams, OKR, Teamführung, Mitarbeiterentwicklung, Coding-Guidelines, Web- und Mobile-Anwendungen, Technologiebewertung, disziplinarische Führung Als Teamleiter Mobile & Web bei Hugo Boss übernahm der Benutzer die fachliche und disziplinarische Führung eines Softwareentwicklungsteams mit 11 direkten Mitarbeitenden. Ziel war es, ein leistungsfähiges Team aufzubauen und sicherzustellen, dass die Teammitglieder ihre Potenziale ausschöpfen und den Geschäftszielen von Hugo Boss entsprechen. Dies erforderte die kontinuierliche Förderung der technischen Exzellenz, die Weiterentwicklung der Mitarbeiter sowie die Sicherstellung der Qualität der Web- und Mobile-Applications. Personalentwicklung und Erarbeitung individueller Entwicklungspläne für die ihm unterstellten Mitarbeiter
+Coaching und Mentoring sowohl fachlich als auch methodisch
+Festlegung individueller Ziele für die ihm unterstellten Mitarbeiter gemeinsam mit dem Team und dem CPS D&l Management
+Festlegung von Zielen für das Team
+Feststellung der Zielerreichung sowie Kommunikation der Ergebnisse
+Motivation des Teams und aller unterstellten Mitarbeiter
+Recruiting
+Umgang mit Konflikten
+Aufbau eines UI/UX Teams
+Strategische Mitgestaltung der Abteilung CPS Development & Integration
+Verantwortung für die strukturelle Entwicklung, organisatorische Aufstellung und strategische Ausrichtung
+seines Teams Mitgestaltung und Aufbau zweier Nearshore Standorte in Lissabon und Manchester
+Einführung agiler Arbeitsweisen in der IT
+Vorantreiben der Ablösung der zugekauften Lösung Frontify sowie Aufbau der Hugo Boss eigenen UI/UX Toolbox Aufbau eines leistungsfähigen, selbstorganisierten Teams mit hoher Eigenverantwortung.
+Steigerung der Produktivität durch klar definierte Coding-Guidelines und technologische Standards.
+Etablierung einer Feedbackkultur sowie klarer Entwicklungspläne für Teammitglieder, die zu einer höheren Mitarbeiterzufriedenheit beitrugen. Förderung einer einheitlichen Code-Qualität trotz verteilter Teams (Onsite & Nearshore).
+Sicherstellung der Teamstabilität während organisatorischer Veränderungen und Anpassung an agile Arbeitsweisen.
+Wiederstände bei der Einführung (skalierter) agiler Arbeitsweisen im Management German,
+English Teamleitung, Coaching, Mitarbeiterentwicklung, Coding-Guidelines, IT-Strukturen, Mobile Apps, Web-Entwicklung, Disziplinarische Führung, Nearshore-Management, Leadership, Personalentwicklung
+
+3. Entwicklung und technische Projektleitung für mobile Apps - CGI 5 12/2012 – 08/2015 Automotive - Aftersales Daimler AG (Mercedes Benz) Vor Ort App Consulting, Mobile App Development 9 High Xcode, Android Studio, Eclipse, Jenkins, Git, Appium, Jira, Confluence Objective-C, Java, XML, Python,Testautomatisierung, Coaching, generative Softwareentwicklung, Scrum In meiner Zeit bei CGI arbeitete ich von 12/2012 bis 08/2015 für die Daimler AG und am Firmensitz von CGI an einem umfangreichen Projekt im Bereich mobile Anwendungen. Die Tätigkeiten begannen mit der Entwicklung mobiler Applikationen und entwickelten sich mit zunehmender Verantwortung hin zur Rolle eines technischen Projektleiters. Ein zentraler Bestandteil war die Digitalisierung von Betriebsanleitungen und die internationale Verbreitung der Lösungen. Entwicklung mobiler Anwendungen und Systemarchitekturen.
+Kundenberatung und Betreuung im Bereich Mobile Solutions.
+Durchführung von Tests und Qualitätssicherung mobiler Anwendungen.
+Entwicklung und Einführung von Testautomatisierung mit Appium.
+Test- und Releasemanagement zur Sicherstellung von Funktionalität und Stabilität.
+Schulung neuer Mitarbeiter in der Entwicklung mobiler Apps.
+Generative Softwareentwicklung zur Effizienzsteigerung der Entwicklungsprozesse.
+Einführung agiler Arbeitsmethoden und Zertifizierung zum Scrum Master. Einführung und Coaching zur Testautomatisierung mobiler Apps mit Appium im Unternehmen.
+Entwicklung eines Python-Skripts zur Optimierung der Lokalisierung in 27 Sprachen, inklusive automatisierter Verarbeitung der Übersetzungen.
+Schulung neuer Mitarbeiter im Bereich Mobile Development und Projektstandards. Entwicklung der App MBGuides:
+Meistgeladene Apps von Mercedes Benz, Smart, Mercedes Benz Trucks und Vans.
+Übersetzung in 27 Sprachen und internationaler Vertrieb.
+Entwicklung einer Workbench zur Erstellung mobiler Betriebsanleitungen.
+Maßgeblicher Beitrag zur internationalen Digitalisierung und Verbreitung mobiler Lösungen. Lokalisierung in arabische und hebräische Versionen aufgrund des Textflusses von rechts nach links.
+Pflege und Skalierung der Sprachversionen, optimiert durch ein Python-Skript zur Automatisierung des Übersetzungsprozesses.
+Inhaltscaching zur Bewältigung großer XML-Dateien und Inhalte der Betriebsanleitungen
+Einführung agiler Arbeitsmethoden im Unternehmen und die Anpassung an neue Prozesse. English Automotive, Mobile Apps, Objective-C, Java, Python, Testautomatisierung, Scrum, Internationalisierung, AppStore, Nearshore-Management, Teamführung, agiles Arbeiten, Digitalisierung
+
+4. Management von Ladungsträger und FörderhilfMedium 2 11/2016 - 03/2017 Logistik Kverneland Hybrid App Solution Architect, Project Manager, Technical Lead 3 Small Android Studio, Balsamiq Mockup, Java, git, Jira, Confluence, Slack Technische Konzeption, Nearshore, UI/UX, Mobile App, PHP Die korrekte Verwaltung von Ladungsträgern wie Paletten und Gitterboxen ist für Kverneland essenziell, da diese einem Pfandsystem unterliegen. Durch Lieferungen und Auslieferungen ändert sich der Bestand kontinuierlich, was zu Bestandsdifferenzen führen kann. Um dies zu vermeiden, soll eine Android-App entwickelt werden, die im Cockpit der Staplerfahrzeuge installiert wird. Sie soll eine einfache und exakte Erfassung von Be- und Entladungen durch die Staplerfahrer ermöglichen und so eine transparente und lückenlose Bestandskontrolle gewährleisten. Technische Konzeption & Architektur: Entwicklung der Systemarchitektur als Solution Architekt.
+Projektleitung: Verantwortung für Zeit, Budget und Steuerung des Entwicklerteams.
+Technische Leitung: Sicherstellung der technischen Umsetzung und Code-Qualität.
+UI/UX-Design: Entwurf einer intuitiven Benutzeroberfläche für Staplerfahrer.
+Steuerung des Nearshor Teams zur Umsetzung der Android-App zur Erfassung von Be- und Entladungen.
+Stakeholder-Management: Abstimmung der Anforderungen und Feature-Priorisierung mit Kverneland. Schulung der Mitarbeitenden bei dem Kunden vor Ort Erfolgreiche Produktivsetzung der Android-App 
+Umsetzung innerhalb der vorgegebenen Zeit und des Budgets trotz technischer Herausforderungen.
+Ausweitung der Anwender bei weiteren Lieferanten Technische Schwierigkeiten durch unzureichende WLAN-Abdeckung, gelöst durch die Integration eines lokalen Caches.
+Installation der Endgeräte in den Gabelstapler German Logistik, Prozessoptimierung, Mobile Apps, Java, MySQL, Nearshore-Teamführung, Produktion, Produktionssoftware, Android
+
+5. Mitgestaltung der Nearshore-Standorte in Prag und Zilina zur Steigerung der Wettbewerbsfähigkeit 4 09/2015 – 03/2018 IT-Entwicklung, Nearshore-Management, Mobile & Web-Entwicklung Inloop GmbH Hybrid Agile Technical Lead, Prozessverantwortlicher, Onsite-Koordinator 15 Medium Jira, Confluence, Slack, PowerPoint, Git, Jenkins Nearshore-Management, Agile Methoden (Scrum, Kanban), Prozessoptimierung, Teamentwicklung, Technologiemanagement Um die Wettbewerbsfähigkeit der inloop GmbH auf dem Markt der IT-Dienstleistungen zu stärken, wurden Nearshore-Standorte in Prag (Tschechien) und Zilina (Slowakei) etabliert. Ziel war es, den Kostenvorteil durch niedrigere Tagessätze der Nearshore-Entwickler mit einer hohen Qualitätssicherung durch Onsite-Technical-Leads beim Kunden vor Ort zu kombinieren.
+
+Durch diese Strategie konnten die Entwicklungskosten gesenkt und gleichzeitig die Projektqualität erhöht werden, da ich als Technical Lead direkt beim Kunden agierte, die Teams steuerte und als technisches Bindeglied zwischen Kunden und Nearshore-Teams fungierte. Dieses Modell ermöglichte es den Kunden, flexibel auf Kapazitätsengpässe zu reagieren und gleichzeitig die Projektkosten zu senken. Mitgestaltung der Nearshore-Standorte in Prag (Tschechien) und Zilina (Slowakei) zur Steigerung der Wettbewerbsfähigkeit der inloop GmbH.
+Steuerung der Nearshore-Entwicklungsteams in Prag und Zilina zur Sicherstellung der technischen Exzellenz in Kundenprojekten.
+Direkte Kundenkommunikation als Technical Lead vor Ort: Koordination und Unterstützung der Kundenprojekte durch technische Führung und Beratung.
+Etablierung technischer Standards (Coding-Guidelines, Architekturstandards) in den Projekten mit den Nearshore-Teams.
+Sicherstellung der Wettbewerbsfähigkeit durch die Kombination von Nearshore-Entwicklern mit günstigen Tagessätzen und einem vor Ort präsenten Technical Lead.
+Koordination der Zusammenarbeit mit den Kunden: Sicherstellung einer reibungslosen Kommunikation zwischen Kunde, Onsite-Team und Nearshore-Entwicklung. Onboarding neuer Nearshore-Mitarbeiter in den Projekten, einschließlich der Vermittlung der spezifischen Kundenanforderungen.
+Prozessentwicklung: Einführung von Best Practices für die Integration von Nearshore-Teams in Projekte mit vor Ort eingesetzten Leads.
+Kostensenkung: Durch die Nutzung kostengünstiger Nearshore-Teams in Verbindung mit der Steuerung durch Onsite-Technical-Leads konnten die Projektkosten signifikant gesenkt werden. Steigerung der Wettbewerbsfähigkeit der inloop GmbH durch eine effiziente Kombination von Nearshore-Entwicklern (günstige Tagessätze) und technischen Leads beim Kunden vor Ort.
+Erfolgreiche Integration der Nearshore-Teams in die Kundenprojekte, die von der Daimler AG, Bosch Power Tools und Kverneland in Auftrag gegeben wurden.
+Flexibilität in der Projektabwicklung: Die Projekte konnten je nach Ressourcenbedarf flexibel besetzt werden, indem zusätzliche Nearshore-Entwickler eingebunden wurden.
+Kostenreduktion durch Nearshore-Entwicklung: Die Kunden profitierten von niedrigeren Entwicklungskosten, da der Großteil der Umsetzungsarbeit durch die Nearshore-Teams übernommen wurde. Kommunikationsbarrieren: Sicherstellung der reibungslosen Kommunikation zwischen dem Kunden vor Ort und den Nearshore-Teams in Prag und Zilina.
+Unterschiedliche Arbeitsweisen: Abstimmung der Arbeitsmethoden (Scrum, Kanban) zwischen den Onsite- und Nearshore-Teams.
+Einheitliche technische Standards: Sicherstellung, dass alle Nearshore-Teams die gleichen Coding-Guidelines, Architekturstandards und Qualitätssicherungsmaßnahmen einhalten.
+Kulturelle Unterschiede: Überbrückung der kulturellen Unterschiede zwischen den Nearshore-Teams und den vor Ort arbeitenden Kunden. English Nearshore-Management, Standortentwicklung, Teamentwicklung, Agile Methoden, Scrum, Kanban, Coding-Guidelines, Prozessoptimierung, Wettbewerbsfähigkeit, Stakeholder-Management, Onsite-Präsenz, Remote-Work, Onboarding, Kosteneinsparung, Führungserfahrung
+
+=== Response ===
+<li>
+  <strong>Technische Projektleitung für MBGuides Version 2.0</strong><br>
+  <em>09/2015 – 03/2018</em><br>
+  Als technischer Projektleiter war ich für die Umsetzung der Version 2.0 der MBGuides App für iOS und Android sowie die Weiterentwicklung der Workbench zur inhaltlichen Pflege verantwortlich.
+</li>
+<li>
+  <strong>Fachliche und disziplinarische Führung des Softwareentwicklungsteams (Web & Mobile Applications)</strong><br>
+  <em>01/2019 – 04/2022</em><br>
+  Als Teamleiter Mobile & Web bei Hugo Boss übernahm der Benutzer die fachliche und disziplinarische Führung eines Softwareentwicklungsteams mit 11 direkten Mitarbeitenden.
+</li>
+<li>
+  <strong>Mitgestaltung der Nearshore-Standorte in Prag und Zilina zur Steigerung der Wettbewerbsfähigkeit</strong><br>
+  <em>09/2015 – 03/2018</em><br>
+  Um die Wettbewerbsfähigkeit der inloop GmbH auf dem Markt der IT-Dienstleistungen zu stärken, wurden Nearshore-Standorte in Prag (Tschechien) und Zilina (Slowakei) etabliert.
+</li>
+

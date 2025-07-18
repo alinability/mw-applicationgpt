@@ -15,20 +15,17 @@ if not api_key:
 # `client` kann als Alias verwendet werden, falls gewünscht
 client = OpenAI(api_key=api_key)
 
-
 def ask_chatgpt_single_prompt(
     prompt: str,
     model: str = DEFAULT_MODEL,
     temperature: float = 0.2,
-    max_tokens: int = 500
+    max_tokens: int = 4096
     ) -> str:
     """
     Sendet einen einzelnen Prompt an ChatGPT und gibt den Text zurück.
     Loggt dabei die genutzten Tokens zur Kostenkontrolle.
     """
-    # Token-Länge prüfen
-    count_tokens(prompt, model=model)
-
+    
     # Neue V1-API-Syntax: client.chat.completions.create
     response = client.chat.completions.create(
         model=model,
@@ -47,15 +44,14 @@ def validate_prompt_length(
     prompt: str,
     model: str = DEFAULT_MODEL,
     max_tokens: int = 4096
-) -> None:
+    ):
     """Prüft, ob der Prompt die maximale Token-Länge überschreitet."""
     token_count = count_tokens(prompt, model=model)
     if token_count > max_tokens:
-        raise ValueError(
-            f"Prompt zu lang: {token_count} Tokens, erlaubt sind {max_tokens} Tokens."
-        )
+        return False
+    return True
 
-def build_prompt(job_text: str, experiences: list[str], model: str = DEFAULT_MODEL, max_tokens: int = 8000) -> str:
+def build_prompt(job_text: str, experiences: list[str], model: str = DEFAULT_MODEL, max_tokens: int = 4096) -> str:
     """
     Baut einen Prompt zur Auswahl der 3 relevantesten Erfahrungen und zur Rückgabe im HTML-Format.
     """
