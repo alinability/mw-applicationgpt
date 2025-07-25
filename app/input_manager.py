@@ -10,6 +10,14 @@ import re
 import pdfplumber
 import ocrmypdf
 import tempfile
+import yaml
+from pathlib import Path
+from collections import OrderedDict
+
+PROMPTS = yaml.safe_load(
+    (Path(__file__).parent / "prompts.yml")
+    .read_text(encoding="utf-8")
+)
 
 try:
     from app.openai_client import ask_chatgpt_single_prompt, validate_prompt_length
@@ -263,53 +271,59 @@ def make_key_from_file(pdf_path: str) -> str:
     buf = open(pdf_path, "rb").read()
     return hashlib.sha256(buf).hexdigest()
 
-def reduce_pdf_to_essentials(text: str, pdf_path : str, cache_key: str) -> str:
+def remove_stopwords(text: str) -> str:
+    GERMAN_STOP_WORDS = {"der","die","das","und","oder","ein","eine","zu","von"}
+    words = text.split()
+    filtered = [w for w in words if w.lower() not in GERMAN_STOP_WORDS]
+    return " ".join(filtered)
+
+def reduce_pdf_to_essentials(text: str, pdf_path: str, cache_key: str) -> str:
     """
     Reduziert den PDF-Text auf das Wesentliche via ChatGPT, mit einfachem Cache.
+    Nutzt die Prompt-Templates aus PROMPTS (geladen aus prompts.yml).
     """
-    prompt = (
-        "Ich gebe dir eine Stellenanzeige:\n\n"
-        f"{text}\n\n"
-        "Bitte fasse diesen Text präzise zusammen und hebe **besonders** die technischen Anforderungen hervor, "
-        "insbesondere:\n"
-        "- Programmiersprachen und Versionen\n"
-        "- Frameworks und Bibliotheken\n"
-        "- Tools und Plattformen\n"
-        "- Schnittstellen oder APIs und Protokolle\n"
-        "- Tätigkeitsbereich des Unternehmens\n\n"
-        "Die Zusammenfassung soll in Stichpunkten erfolgen."
-    )
+     # Gesamtes Dokument in einem Prompt reduzieren
+    template = PROMPTS["reduce_pdf"]
+    filled = template.format(text=text)
+    # Prompt-Länge validieren
+    if not validate_prompt_length(filled):
 
-    prompt_length_bool = validate_prompt_length(text)
-    
-    if not prompt_length_bool:
-        chunks = chunk_text_by_tokens(text)
-        for chunk in chunks:
-            reduced = ""
-            prompt = (
-            f"Ich gebe dir einen Auszug aus einer Stellenanzeige:\n\n"
-            f"{chunk}\n\n"
-            "Bitte fasse diesen Text präzise zusammen und hebe **besonders** die technischen Anforderungen hervor, "
-            "insbesondere:\n"
-            "- Programmiersprachen und Versionen\n"
-            "- Frameworks und Bibliotheken\n"
-            "- Tools und Plattformen\n"
-            "- Schnittstellen oder APIs und Protokolle\n"
-            "- Tätigkeitsbereich des Unternehmens\n\n"
-            "Die Zusammenfassung soll in Stichpunkten erfolgen."
-        )
-            chunk_reduced = ask_chatgpt_single_prompt(prompt)
-            reduced = reduced + " " + chunk_reduced
+        # Wenn wir eine Liste von Kapiteln haben, jeweils einzeln reduzieren
+        if isinstance(text, list):
+            reduced_final = ""
+            for chapter in text:
+                # Prompt-Template holen und füllen
+                template = PROMPTS["reduce_pdf_chapter"]
+                filled = template.format(text=chapter)
+                # Länge prüfen und senden
+                if not validate_prompt_length(filled):
+                    raise ValueError("Kapitel-Prompt zu lang")
+                chunk = ask_chatgpt_single_prompt(filled)
+                reduced_final += chunk + "\n"
+            text = reduced_final.strip()
+            template = PROMPTS["reduce_pdf"]
+            filled = template.format(text=text)
+        else:
+            # ggf. Stopwörter entfernen und neu füllen
+            text_slim = remove_stopwords(text)
+            filled = template.format(text=text_slim)
+            if not validate_prompt_length(filled):
+                # ggf. in Chunks aufteilen
+                parts = chunk_text_by_tokens(text)
+                reduced_parts = []
+                for p in parts:
+                    tmp = PROMPTS["reduce_pdf_large"].format(text=p)
+                    if not validate_prompt_length(tmp):
+                        raise ValueError("Chunk-Prompt zu lang")
+                    reduced_parts.append(ask_chatgpt_single_prompt(tmp))
+                reduced = "\n".join(reduced_parts)
+                save_cached_reduction(cache_key, reduced)
+                print("✅ PDF-Inhalt wurde erfolgreich in Chunks reduziert.")
+                return reduced
 
-            save_cached_reduction(cache_key, reduced)
-
-            print("✅ PDF-Inhalt wurde erfolgreich reduziert.")
-            return reduced
-
-    reduced = ask_chatgpt_single_prompt(prompt)
-
+    # 3) Einfache Reduktion
+    reduced = ask_chatgpt_single_prompt(filled)
     save_cached_reduction(cache_key, reduced)
-
     print("✅ PDF-Inhalt wurde erfolgreich reduziert.")
     return reduced
 
@@ -322,41 +336,43 @@ def extract_headings_from_pdf(pdf_path: str) -> list[str]:
     """
     Liest jede Seite mit pdfplumber ein, splittet sie in Zeilen
     und sammelt alle Zeilen, die mit „Zahl. Text“ beginnen.
+    Dubletten (gleiche Kapitelnummer) werden entfernt,
+    jeweils die letzte Vorkommen behalten.
     """
-    headings: list[str] = []
+    heads: list[tuple[str,str]] = []
     with pdfplumber.open(pdf_path) as pdf:
         for page in pdf.pages:
             text = page.extract_text() or ""
             for line in text.split("\n"):
                 clean = line.strip()
-                # Regex: Zeilenanfang, Zahl+, optional weitere .Ziffern, Punkt, mindestens ein Leerzeichen, dann Text
-                if re.match(r'^\d+(?:\.\d+)*\.\s+\S+', clean):
-                    headings.append(clean)
-    return headings
+                # Muster: ganze Kapitelnummer (z.B. 3 oder 10.2.1), Punkt, mindestens ein Leerzeichen, dann Text (mit Buchstabe)
+                m = re.match(r'^(\d+(?:\.)*\.\s+[A-Za-zÄÖÜäöü,\s-]+)(\d?)', clean)
+                if not m:
+                    continue
+                title, page = m.groups()
+                if page != '':
+                    continue
+                heads.append(title)
+    return list(heads)
 
-def select_best_heading(headings):
+def select_best_heading(headings: list[str]) -> list[str]:
     """
     Fragt ChatGPT, welche Heading(s) am relevantesten für die Stellenanzeige sind.
     Liefert eine ganz normale Python-Liste von Kapitel-Titeln zurück.
     """
-    # 1) Inhaltsverzeichnis als Bullet-Point-Liste für den Prompt aufbauen
+    # Inhaltsverzeichnis als Bullet-Point-Liste für den Prompt aufbauen
     toc = "\n".join(f"- {h}" for h in headings)
-    prompt = (
-        "Die PDF enthält folgende Kapitelüberschriften:\n"
-        f"{toc}\n\n"
-        "Welche dieser Überschriften sind essentiell für die Anforderungen und Qualifikation des "
-        "Personals im Projekt? Bitte antworte **nur** mit den exakten Kapitel-Titeln, jeder Titel "
-        "in einer neuen Zeile. Du darfst dafür '-' voranstellen oder weglassen."
-    )
 
-    # 2) ChatGPT fragen
+    # Prompt-Template aus YAML holen und with toc befüllen
+    template: str = PROMPTS["select_heading"]
+    prompt = template.format(toc=toc)
+
+    # API-Call
     raw = ask_chatgpt_single_prompt(prompt).strip()
 
-    # 3) Antwort in Zeilen splitten und leerzeilen herausfiltern
+    # Antwort parsen
     lines = [line.strip() for line in raw.splitlines() if line.strip()]
-
-    # 4) führendes "- " entfernen (falls vorhanden) und saubere Liste sammeln
-    result = []
+    result: list[str] = []
     for line in lines:
         if line.startswith("-"):
             result.append(line.lstrip("- ").strip())
@@ -364,38 +380,50 @@ def select_best_heading(headings):
             result.append(line)
     return result
 
-def extract_chapter_text(full_text, chosen, all_headings):
+def extract_chapter_text(full_text: str,
+                         chosen: str | list[str],
+                         all_headings: list[str]) -> list[str]:
     """
-    Schneidet aus full_text nur den Abschnitt heraus, der zu `chosen` gehört.
-    Wenn `chosen` eine Liste von Überschriften ist, werden alle entsprechenden
-    Abschnitte extrahiert und hintereinander gehängt.
+    Schneidet aus full_text für jede Überschrift in `chosen` den kompletten Abschnitt
+    (Überschrift + Inhalt bis zur nächsten Überschrift oder Dokumentende) heraus.
+    Dabei wird bei mehrfachen Vorkommen einer Überschrift immer der **zweite** Fund 
+    (z.B. im Fließtext statt im Inhaltsverzeichnis) als Startposition genutzt.
+    Gibt immer eine Liste von Strings zurück, selbst bei nur einer Überschrift.
     """
-    def _extract_one(text, heading, headings):
-        # Split vor der gewählten Überschrift
-        parts = re.split(rf'(?m)^{re.escape(heading)}.*$', text, maxsplit=1)
-        if len(parts) < 2:
-            return ""
-        after = parts[1]
-        # Finde Position der nächsten Überschrift
-        others = [h for h in headings if h != heading]
-        if others:
-            nxt_pattern = rf'(?m)^({"|".join(re.escape(h) for h in others)})'
-            m = re.search(nxt_pattern, after)
-            if m:
-                return after[:m.start()].strip()
-        return after.strip()
 
-    # Handle list of headings
-    if isinstance(chosen, (list, tuple)):
-        sections = []
-        for heading in chosen:
-            sec = _extract_one(full_text, heading, all_headings)
-            if sec:
-                sections.append(sec)
-        return "\n\n".join(sections)
+    # 1) Finde alle tatsächlichen Vorkommen der Überschriften mit ihrer Position
+    matches: list[tuple[int, str]] = []
+    for h in all_headings:
+        # suche alle Vorkommen in eigenen Zeilen
+        pattern = rf'{re.escape(h)}'
+        found = list(re.finditer(pattern, full_text))
+        if not found:
+            continue
 
-    # Single heading
-    return _extract_one(full_text, chosen, all_headings)
+        # nimm das zweite Vorkommen, falls vorhanden, sonst das erste
+        m = found[1] if len(found) > 1 else found[0]
+        matches.append((m.start(), h))
+
+    # falls keine gefunden, leere Liste
+    if not matches:
+        return []
+
+    # 2) Sortiere nach Position im Text
+    matches.sort(key=lambda x: x[0])
+
+    # 3) Bestimme für jede gefundene Überschrift den entsprechenden Abschnitt
+    sections: dict[str, str] = {}
+    for idx, (pos, h) in enumerate(matches):
+        start = pos
+        end = matches[idx + 1][0] if idx + 1 < len(matches) else len(full_text)
+        sections[h] = full_text[start:end].strip()
+    # 4) Baue Rückgabeliste für gewählte Heading(s)
+    chosen_list = chosen if isinstance(chosen, (list, tuple)) else [chosen]
+    result: list[str] = []
+    for h in chosen_list:
+        if h in sections:
+            result.append(sections[h])
+    return result
 
 def process_pdf(pdf_path: str) -> str:
     """
@@ -434,7 +462,6 @@ def process_pdf(pdf_path: str) -> str:
         #print(f"ℹ️ Wähle Kapitel „{best}“ für Reduktion.")
         full_text = extract_chapter_text(full_text, best, headings)
         reduced = reduce_pdf_to_essentials(full_text, pdf_path, cache_key=key)
-    
     # 5) Dieses Kapitel reduzieren und cachen
     save_cached_reduction(key, reduced)
     return reduced

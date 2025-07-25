@@ -1,0 +1,111 @@
+reduce_pdf: |
+  Ich gebe dir eine Stellenanzeige:
+
+  {{text}}
+
+  Bitte fasse diesen Text präzise zusammen. Achte darauf alle relevanten Deatils wiederzugeben, dazu gehört insbesondere das folgende:
+  - Tätigkeitsbereich des Unternehmens
+  - Aufgabenbereich 
+  - Programmiersprachen und Versionen
+  - Frameworks und Bibliotheken
+  - Tools und Plattformen
+  - Schnittstellen oder APIs und Protokolle
+  
+  Die Zusammenfassung soll in Stichpunkten erfolgen.
+
+reduce_pdf_chapter: |
+  Ich gebe dir ein Kapittel einer Ausschreibung:
+
+  {{text}}
+
+  Bitte fasse diesen Text präzise zusammen und hebe **besonders** die technischen Anforderungen hervor, insbesondere:
+  - Programmiersprachen und Versionen
+  - Frameworks und Bibliotheken
+  - Tools und Plattformen
+  - Schnittstellen oder APIs und Protokolle
+  - Tätigkeitsbereich des Unternehmens
+
+  Die Zusammenfassung soll in Stichpunkten erfolgen.
+
+reduce_pdf_large: |
+  Ich gebe dir einen Auszug aus einer Ausschreibung:
+
+
+  {chunk}
+
+  Bitte fasse diesen Text präzise zusammen und hebe **besonders** die technischen Anforderungen hervor,
+  insbesondere:
+  - Programmiersprachen und Versionen
+  - Frameworks und Bibliotheken
+  - Tools und Plattformen
+  - Schnittstellen oder APIs und Protokolle
+  - Tätigkeitsbereich des Unternehmens
+
+  Die Zusammenfassung soll in Stichpunkten erfolgen.
+
+select_heading: |
+  Die PDF enthält folgende Kapitelüberschriften:
+
+  {toc}
+
+
+  Welche dieser Überschriften sind essentiell für die Anforderungen und Qualifikation des
+  Personals im Projekt? Bitte antworte **nur** mit den exakten Kapitel-Titeln, jeder Titel
+  in einer neuen Zeile. Du darfst dafür '-' voranstellen oder weglassen.
+
+get_3_experiences: |
+  Du bist ein Karrierecoach. Deine Aufgabe ist es, aus den folgenden Berufserfahrungen
+  die drei relevantesten für die unten stehende Stellenanzeige auszuwählen.
+
+  Bitte gib die drei Erfahrungen exakt im folgenden HTML-Format zurück:
+
+  <li>
+    <strong>[Titel der Erfahrung]</strong><br>
+    <em>[Zeitraum]</em><br>
+    [Beschreibung in max. 2 Sätzen]
+  </li>
+
+  Bitte sortiere die Erfahrungen zeitlich absteigend nach den Anfangsdaten.
+  Gib nur die drei HTML-Elemente zurück – ohne Einleitung oder zusätzliche Erläuterungen.
+
+  **Stellenanzeige**:
+  {job_description}
+  
+  **Berufserfahrungen**:
+  {experiences}
+
+estimate_match_score: |
+  Bitte bewerte konservativ auf einer Skala von 0 bis 100, wie gut der Bewerber auf die folgende Stellenanzeige passt. Dabei soll ein score von 80 einer sehr gute Übereisntimmung entsprechen. Gehe dabei insbesondere auf diese Punkte ein:
+  1. Fachliche Übereinstimmung: genutzte Technologien, Frameworks, Methoden
+  2. Führungserfahrung: Teamgröße, Art der Verantwortung
+  3. Branchen- und Domainwissen
+  4. Nachweisbarer Impact / erzielte Ergebnisse
+  5. Sprach-, Standort- oder Kulturkompetenz (z.B. Nearshore-Management)
+  
+  Antworte bitte ganz kurz mit einer einzigen Zahl (z.B. `40`). 
+    
+  Stellenanzeige:
+  {job_description}
+
+  Relevante Berufserfahrungen:
+
+  {experiences}
+
+  Nur die Zahl zurückgeben, keine weiteren Erklärungen.
+
+refine_experiences: |
+  Du bist ein Bewerber-Matching-Experte.
+
+  Stellenanzeige (reduziert):
+  {job_description}
+
+  Roh-Dokumente aus dem RAG (Top-5):
+  {docs_text}
+
+  Aktuelle Auswahl der Top-3 Berufserfahrungen als HTML-Liste:
+  {experiences_html}
+
+  1. Bewerte anhand der Stellenanzeige, ob diese drei Einträge wirklich die relevantesten sind.
+  2. Falls ja, antworte nur mit der unveränderten HTML-Liste.
+  3. Falls nein, wähle aus den obigen 5 Roh-Dokumenten die drei passendsten aus und liefere sie als neue HTML-Liste mit genau drei <li>…</li> zurück.
+  4. Gib ausschließlich die endgültige HTML-Liste zurück (ohne Erklärung).

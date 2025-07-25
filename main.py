@@ -2,6 +2,7 @@
 
 import os
 import sys
+from collections import OrderedDict
 
 class TelemetryStderrFilter:
     def __init__(self, stderr):
@@ -54,6 +55,7 @@ except ImportError:
 
 INPUT_FOLDER = "input"
 PERSIST_DIRECTORY = "data/chroma"
+TEMPLATE_PATH = "app/templates"
 
 def main():
     # 1. Dateien finden
@@ -102,7 +104,7 @@ def main():
         generate_kurzprofil_html(
             static_info=static_info,
             experiences=response,
-            template_path="app/templates",
+            template_path=TEMPLATE_PATH,
             output_dir="output",
             job_title=job_title
         )

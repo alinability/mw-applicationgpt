@@ -6,6 +6,13 @@ import os
 import re
 from openai import OpenAI
 from prompt_utils import count_tokens, DEFAULT_MODEL
+import yaml
+from pathlib import Path
+
+PROMPTS = yaml.safe_load(
+    (Path(__file__).parent / "prompts.yml")
+    .read_text(encoding="utf-8")
+)
 
 # API-Key aus Umgebungsvariable
 api_key = os.getenv("OPENAI_API_KEY")
@@ -51,30 +58,34 @@ def validate_prompt_length(
         return False
     return True
 
-def build_prompt(job_text: str, experiences: list[str], model: str = DEFAULT_MODEL, max_tokens: int = 4096) -> str:
+def build_prompt(
+    job_text: str,
+    experiences: list[str],
+    model: str = DEFAULT_MODEL,
+    max_tokens: int = 4096
+) -> str:
     """
-    Baut einen Prompt zur Auswahl der 3 relevantesten Erfahrungen und zur Rückgabe im HTML-Format.
+    Baut einen Prompt zur Auswahl der 3 relevantesten Erfahrungen
+    und zur Rückgabe im HTML-Format, basierend auf dem Template
+    'get_3_experiences' in prompts.yml.
     """
-    intro = (
-        "Du bist ein Karrierecoach. Deine Aufgabe ist es, aus den folgenden Berufserfahrungen "
-        "die drei relevantesten für die unten stehende Stellenanzeige auszuwählen.\n\n"
-        "Bitte gib die drei Erfahrungen exakt im folgenden HTML-Format zurück:\n\n"
-        "<li>\n"
-        "  <strong>[Titel der Erfahrung]</strong><br>\n"
-        "  <em>[Zeitraum]</em><br>\n"
-        "  [Beschreibung in max. 2 Sätzen]\n"
-        "</li>\n\n"
-        "Bitte sortiere die Erfahrungen zeitlich absteigend nach den Anfangsdaten."
-        "Gib nur die drei HTML-Elemente zurück – ohne Einleitung oder zusätzliche Erläuterungen."
+    job_text = job_text.strip()
+    # 1) rohes Template aus YAML holen
+    template: str = PROMPTS["get_3_experiences"]
+    # 2) Liste der Erfahrungen in eine string-Repräsentation umwandeln
+    #    (falls das Template eine Bullet-Liste erwartet)
+    ex_list = "\n".join(f"- {e}" for e in experiences)
+    # 3) Template befüllen
+    filled_prompt = template.format(
+        job_description=job_text,
+        experiences=ex_list
     )
-
-    job_section = f"\n\n📌 **Stellenanzeige**:\n{job_text.strip()}"
-    exp_section = "\n\n📚 **Berufserfahrungen**:\n" + "\n---\n".join(experiences)
-
-    full_prompt = f"{intro}{job_section}{exp_section}"
-
-    validate_prompt_length(full_prompt, model=model, max_tokens=max_tokens)
-    return full_prompt
+    # 4) Prompt-Länge prüfen
+    if not validate_prompt_length(filled_prompt, model=model, max_tokens=max_tokens):
+        raise ValueError(
+            f"Prompt für 'get_3_experiences' ist zu lang ({max_tokens} Token max)."
+        )
+    return filled_prompt
 
 def is_wrapped_with_same_tag(html: str) -> bool:
     """
@@ -108,7 +119,7 @@ def validate_html_list(response: str) -> bool:
     # 3) Überprüfe, ob die Liste richtig mit <ul>…</ul> oder <ol>…</ol> umschlossen ist
     if bool(is_wrapped_with_same_tag(clean)) == False:
         print("❌ Keine korrekt formatierte HTML-Liste gefunden (fehlende umschließenden <il>/<ul>/<ol>-Tags).")
-        print(clean)
+        #print(clean)
         return False
 
     # 4) Finde alle <li>…</li>
@@ -126,50 +137,45 @@ def validate_html_list(response: str) -> bool:
         
     return clean
 
-def estimate_match_score(job_description: str, experiences: list[str]) -> float | None:
+def estimate_match_score(job_description: str, experiences: list[str]) -> int | None:
     """
     Fragt das OpenAI-API, die Passgenauigkeit des Bewerbers für die Stelle
-    auf einer Skala von 0–100 einzuschätzen, basierend auf der Stellenbeschreibung
-    und den relevanten Erfahrungen. Berücksichtigt dabei u.a.:
-      • Fachliche Übereinstimmung (Technologien, Methoden)
-      • Führungskompetenz und Teamgröße
-      • Branchenerfahrung
-      • Erreichte Ergebnisse / Impact
-      • Sprach- und Kulturkompetenz (z.B. Nearshore-Management)
+    auf einer Skala von 0–100 einzuschätzen, basierend auf:
+      • Stellenbeschreibung
+      • den relevanten Erfahrungen (nummeriert)
     Gibt die Zahl (0–100) zurück oder None, wenn keine Zahl erkannt wurde.
+    Und gibt das Ergebnis im Terminal aus.
     """
-    # Baue den Prompt mit klareren Bewertungskriterien
-    prompt = f"""Bitte bewerte auf einer Skala von 0 bis 100, wie gut der Bewerber
-auf die folgende Stellenanzeige passt. Gehe dabei insbesondere auf diese Punkte ein:
-  1. Fachliche Übereinstimmung: genutzte Technologien, Frameworks, Methoden
-  2. Führungserfahrung: Teamgröße, Art der Verantwortung
-  3. Branchen- und Domainwissen
-  4. Nachweisbarer Impact / erzielte Ergebnisse
-  5. Sprach-, Standort- oder Kulturkompetenz (z.B. Nearshore-Management)
-  
-Antworte bitte ganz kurz mit einer einzigen Zahl (z.B. `87`).  
-  
-Stellenanzeige:
-{job_description}
+    # 1) Liste der Erfahrungen in nummerierten Block umwandeln
+    exp_block = "\n".join(f"{idx}. {exp}" for idx, exp in enumerate(experiences, start=1))
 
-Relevante Berufserfahrungen:
-"""
-    for idx, exp in enumerate(experiences, 1):
-        prompt += f"{idx}. {exp}\n"
-    prompt += "\nNur die Zahl zurückgeben, keine weiteren Erklärungen."
+    # 2) Roh-Template aus YAML holen
+    template: str = PROMPTS["estimate_match_score"]
+    # 3) Prompt befüllen
+    filled = template.format(
+        job_description=job_description.strip(),
+        experiences=exp_block
+    )
 
-    # Anfrage an ChatGPT
-    response = ask_chatgpt_single_prompt(prompt, model="gpt-3.5-turbo", temperature=0.0)
+    # 4) Prompt-Länge validieren
+    if not validate_prompt_length(filled, model="gpt-3.5-turbo", max_tokens=4096):
+        raise ValueError("Prompt für 'estimate_match_score' überschreitet das Token-Limit.")
 
-    # Extrahiere eine Zahl
+    # 5) Anfrage an ChatGPT
+    response = ask_chatgpt_single_prompt(filled, model="gpt-3.5-turbo", temperature=0.0).strip()
+
+    # 6) Zahl extrahieren
     m = re.search(r"(\d{1,3}(?:\.\d+)?)", response)
     if not m:
+        print(f"⚠️ Keine gültige Zahl in der Antwort: {response!r}")
         return None
-    score = float(m.group(1))
-    # Begrenze auf 0–100
-    return max(0.0, min(100.0, score))
 
-def refine_experiences_list(job_description, retrieved_docs, experiences_html):
+    score = int(max(0, min(100, float(m.group(1)))))
+    return score
+
+def refine_experiences_list(job_description: str,
+                            retrieved_docs: list[str],
+                            experiences_html: str) -> str:
     """
     Fragt bei ChatGPT nach, ob die drei HTML-Experience-Einträge 
     wirklich die relevantesten sind, basierend auf:
@@ -178,27 +184,31 @@ def refine_experiences_list(job_description, retrieved_docs, experiences_html):
       - der aktuellen HTML-Liste (experiences_html)
     Gibt immer eine HTML-Liste mit exakt drei <li> zurück.
     """
-    # Roh-Dokumente aufzählen
-    docs_text = "\n".join(f"{i+1}. {doc}" for i, doc in enumerate(retrieved_docs))
+    # 1) Dokumente nummerieren
+    docs_text = "\n".join(f"{i+1}. {doc}" for i, doc in enumerate(retrieved_docs, start=1))
 
-    prompt = f"""Du bist ein Bewerber-Matching-Experte.
+    # 2) Template aus der YAML-Datei laden
+    template: str = PROMPTS["refine_experiences"]
 
-    Stellenanzeige (reduziert):
-    {job_description}
+    # 3) Prompt befüllen
+    prompt = template.format(
+        job_description=job_description.strip(),
+        docs_text=docs_text,
+        experiences_html=experiences_html.strip()
+    )
 
-    Roh-Dokumente aus dem RAG (Top-5):
-    {docs_text}
+    # 4) Prompt-Länge validieren
+    if not validate_prompt_length(prompt, model="gpt-3.5-turbo", max_tokens=4096):
+        raise ValueError("Prompt für 'refine_experiences' überschreitet das Token-Limit.")
 
-    Aktuelle Auswahl der Top-3 Berufserfahrungen als HTML-Liste:
-    {experiences_html}
+    # 5) Anfrage an ChatGPT
+    response = ask_chatgpt_single_prompt(
+        prompt,
+        model="gpt-3.5-turbo",
+        temperature=0.0
+    ).strip()
 
-    1. Bewerte anhand der Stellenanzeige, ob diese drei Einträge wirklich die relevantesten sind.
-    2. Falls ja, antworte nur mit der unveränderten HTML-Liste.
-    3. Falls nein, wähle aus den obigen 5 Roh-Dokumenten die drei passendsten aus
-    und liefere sie als neue HTML-Liste mit genau drei <li>…</li> zurück.
-    4. Gib ausschließlich die endgültige HTML-Liste zurück (ohne Erklärung)."""
-
-    return ask_chatgpt_single_prompt(prompt, model="gpt-3.5-turbo", temperature=0.0)
+    return response
 
 def get_response(reduced_text: str, retrieved_docs: str):
     quality_check_rensponse = False
@@ -224,6 +234,6 @@ def get_response(reduced_text: str, retrieved_docs: str):
     if score is None:
         print("⚠️ Konnte keine Passgenauigkeitszahl aus der Antwort extrahieren.")
     else:
-        print(f"🎯 Passgenauigkeit laut ChatGPT: {score:.1f}%")
+        print(f"🎯 Passgenauigkeit laut ChatGPT: {score}%")
     
     return response
