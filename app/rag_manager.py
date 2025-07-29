@@ -98,9 +98,17 @@ def query_relevant_entries(collection, query: str, n_results: int = 5) -> list[s
 
     # 2) Automatisch eingebauter Fokus auf Technologie/Themen
     tech_focus = (
-        "Bitte berücksichtige bei der Suche besonders technische Anforderungen "
-        "und eingesetzte Frameworks und Tools (z.B. Python, Django, Docker, React)."
-    )
+    "Bitte ermittle die technischen Anforderungen aus der Stellenausschreibung "
+    "und suche in den Projektbeschreibungen nach konkreten Übereinstimmungen.\n\n"
+    "Fokussiere dich auf:\n"
+    "- verwendete Programmiersprachen\n"
+    "- genutzte Frameworks und Bibliotheken\n"
+    "- Tools und Plattformen zur Entwicklung oder Bereitstellung\n"
+    "- Kenntnisse zu APIs oder Protokollen\n"
+    "- Erfahrungen im selben Geschäftsbereich\n\n"
+    "Nenne möglichst nur Technologien, die tatsächlich im Projekttext genannt werden. "
+    "Vermeide Interpretationen oder Halluzinationen."
+)
     # Den originalen Suchtext dahinter hängen
     augmented_query = f"{tech_focus}\n\n{query}"
 

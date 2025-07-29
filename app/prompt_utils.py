@@ -3,7 +3,7 @@ import os
 
 DEFAULT_MODEL = "gpt-3.5-turbo"
 
-def chunk_text_by_tokens(text, max_tokens =  4096, model="gpt-3.5-turbo"):
+def chunk_text_by_tokens(text, max_tokens =  4096, model=DEFAULT_MODEL):
     """
     Zerschneidet `text` in Chunks mit jeweils bis zu `max_tokens` Tokens.
     Gibt eine normale Python-Liste mit den Chunks zurück.

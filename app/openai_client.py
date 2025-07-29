@@ -126,6 +126,7 @@ def validate_html_list(response: str) -> bool:
     items = re.findall(r'<li\b[^>]*>(.*?)</li>', clean, flags=re.DOTALL | re.IGNORECASE)
     if len(items) != 3:
         print(f"❌ Liste enthält {len(items)} Einträge, erwartet werden genau 3.")
+        print(response)
         return False
 
     # 5) Prüfe, dass jeder Eintrag nicht nur aus Tags besteht, sondern echten Text enthält
@@ -158,11 +159,11 @@ def estimate_match_score(job_description: str, experiences: list[str]) -> int | 
     )
 
     # 4) Prompt-Länge validieren
-    if not validate_prompt_length(filled, model="gpt-3.5-turbo", max_tokens=4096):
+    if not validate_prompt_length(filled, model=DEFAULT_MODEL, max_tokens=4096):
         raise ValueError("Prompt für 'estimate_match_score' überschreitet das Token-Limit.")
 
     # 5) Anfrage an ChatGPT
-    response = ask_chatgpt_single_prompt(filled, model="gpt-3.5-turbo", temperature=0.0).strip()
+    response = ask_chatgpt_single_prompt(filled, model=DEFAULT_MODEL, temperature=0.0).strip()
 
     # 6) Zahl extrahieren
     m = re.search(r"(\d{1,3}(?:\.\d+)?)", response)
@@ -198,13 +199,16 @@ def refine_experiences_list(job_description: str,
     )
 
     # 4) Prompt-Länge validieren
-    if not validate_prompt_length(prompt, model="gpt-3.5-turbo", max_tokens=4096):
-        raise ValueError("Prompt für 'refine_experiences' überschreitet das Token-Limit.")
+    if not validate_prompt_length(prompt, model=DEFAULT_MODEL, max_tokens=4096):
+        if validate_prompt_length(prompt, model=DEFAULT_MODEL, max_tokens=128000):
+            model = "gpt‑4o‑mini"
+        if not validate_prompt_length(prompt, model=DEFAULT_MODEL, max_tokens=128000):
+            raise ValueError("Prompt für 'refine_experiences' überschreitet das Token-Limit.")
 
     # 5) Anfrage an ChatGPT
     response = ask_chatgpt_single_prompt(
         prompt,
-        model="gpt-3.5-turbo",
+        model=DEFAULT_MODEL,
         temperature=0.0
     ).strip()
 

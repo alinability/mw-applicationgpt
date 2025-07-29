@@ -53,9 +53,9 @@ except ImportError:
     from html_generator import generate_kurzprofil_html
     from prompt_utils import save_references_to_txt
 
-INPUT_FOLDER = "input"
-PERSIST_DIRECTORY = "data/chroma"
-TEMPLATE_PATH = "app/templates"
+INPUT_FOLDER = "../input"
+PERSIST_DIRECTORY = "../data/chroma"
+TEMPLATE_PATH = "../app/templates"
 
 def main():
     # 1. Dateien finden
@@ -78,7 +78,7 @@ def main():
 
         # 3.a PDF-Text extrahieren und reduzieren
         reduced_text = process_pdf(pdf_path) 
-
+    
         # 3.b Daten aus dem RAG abrufen
         retrieved_docs = get_docs(collection, reduced_text)
         if retrieved_docs == False:
@@ -91,7 +91,7 @@ def main():
             
         # nachdem Du reduced_text und retrieved_docs hast:
         save_references_to_txt(pdf_path, reduced_text, retrieved_docs, response, output_dir="output")
-
+        
         # 3.d Statische Profildaten definieren
         static_info = {
             "name": "Marcel Russ",

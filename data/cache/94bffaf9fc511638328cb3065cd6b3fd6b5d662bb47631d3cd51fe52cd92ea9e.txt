@@ -1,6 +1,0 @@
-- Tätigkeitsbereich: Softwareentwicklung für die Automobilindustrie
-- Aufgabenbereich: Entwicklung von Softwarelösungen für Fahrzeugsteuerungssysteme
-- Programmiersprachen und Versionen: C++, Java, Python
-- Frameworks und Bibliotheken: Qt, Boost, TensorFlow
-- Tools und Plattformen: Git, JIRA, Jenkins, Linux
-- Schnittstellen oder APIs und Protokolle: CAN, LIN, Ethernet, TCP/IP

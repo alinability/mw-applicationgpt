@@ -1,111 +1,109 @@
-reduce_pdf: |
-  Ich gebe dir eine Stellenanzeige:
-
-  {{text}}
-
-  Bitte fasse diesen Text präzise zusammen. Achte darauf alle relevanten Deatils wiederzugeben, dazu gehört insbesondere das folgende:
-  - Tätigkeitsbereich des Unternehmens
-  - Aufgabenbereich 
-  - Programmiersprachen und Versionen
-  - Frameworks und Bibliotheken
-  - Tools und Plattformen
-  - Schnittstellen oder APIs und Protokolle
-  
-  Die Zusammenfassung soll in Stichpunkten erfolgen.
-
-reduce_pdf_chapter: |
-  Ich gebe dir ein Kapittel einer Ausschreibung:
-
-  {{text}}
-
-  Bitte fasse diesen Text präzise zusammen und hebe **besonders** die technischen Anforderungen hervor, insbesondere:
-  - Programmiersprachen und Versionen
-  - Frameworks und Bibliotheken
-  - Tools und Plattformen
-  - Schnittstellen oder APIs und Protokolle
-  - Tätigkeitsbereich des Unternehmens
-
-  Die Zusammenfassung soll in Stichpunkten erfolgen.
-
-reduce_pdf_large: |
-  Ich gebe dir einen Auszug aus einer Ausschreibung:
-
-
-  {chunk}
-
-  Bitte fasse diesen Text präzise zusammen und hebe **besonders** die technischen Anforderungen hervor,
-  insbesondere:
-  - Programmiersprachen und Versionen
-  - Frameworks und Bibliotheken
-  - Tools und Plattformen
-  - Schnittstellen oder APIs und Protokolle
-  - Tätigkeitsbereich des Unternehmens
-
-  Die Zusammenfassung soll in Stichpunkten erfolgen.
-
 select_heading: |
-  Die PDF enthält folgende Kapitelüberschriften:
+  Du bekommst eine Liste von Kapitelüberschriften aus einer PDF.
+  Ziel ist es, herauszufinden, **welche Kapitel relevant für die Anforderungen und Qualifikationen des Projektpersonals** sein könnten.
+  Das können z. B. Kapitel sein, in denen beschrieben wird:
+
+  * welche Aufgaben das Personal übernimmt
+  * wie die Leistung zu erbringen ist
+  * welches Know-how, Equipment oder Verhalten vorausgesetzt wird
+  * welche Selbstorganisation oder Zusammenarbeit gefordert ist
+
+  **Gib nur die Kapitelüberschriften zurück, die dafür relevante Informationen enthalten könnten** – auch wenn sie nicht explizit das Wort „Anforderung“ oder „Qualifikation“ enthalten.
+
+  Antworte **ausschließlich** mit den originalen Kapitelüberschriften.
+  Gib **jede relevante Überschrift in einer neuen Zeile aus**, **ohne Einleitung oder zusätzliche Erklärungen**.
+
+  Hier ist die Liste:
 
   {toc}
 
+reduce_pdf: |
+  Du bekommst einen Abschnitt aus einer Ausschreibung oder die gesamte Ausschreibung.
+  Analysiere den gesamten Text sorgfältig und fasse die technischen Anforderungen **übersichtlich in Stichpunkten** zusammen.
 
-  Welche dieser Überschriften sind essentiell für die Anforderungen und Qualifikation des
-  Personals im Projekt? Bitte antworte **nur** mit den exakten Kapitel-Titeln, jeder Titel
-  in einer neuen Zeile. Du darfst dafür '-' voranstellen oder weglassen.
+  Verwende **ausschließlich** folgende Kategorien und gib **nur jene aus, für die Anforderungen im Text genannt werden**:
+
+  * Tätigkeitsbereich
+  * Aufgabenbereich
+  * Programmiersprachen und Versionen
+  * Frameworks und Bibliotheken
+  * Tools und Plattformen
+  * Schnittstellen oder APIs und Protokolle
+
+  Ordne alle relevanten Informationen einer passenden Kategorie zu. Gib **bei jedem Stichpunkt an**, ob es sich um eine **Muss-Anforderung** oder einen **Wunsch** handelt.
+
+  Nutze für die Formatierung **fettgedruckte Kategorienamen** (Markdown) und darunter eine Aufzählung mit "-" vor jeder Anforderung.
+  Kennzeichne bei jeder Anforderung deutlich, ob es sich um eine **Muss-Anforderung** oder einen **Wunsch** handelt, z. B. durch ein vorangestelltes **\[Muss]** oder **\[Wunsch]**...
+
+  Lasse alle Kategorien weg, die im Text **nicht vorkommen**. Vermeide Ausgaben wie "Keine Informationen" oder leere Listen.
+
+  Hier ist der Text:
+  {text}
 
 get_3_experiences: |
-  Du bist ein Karrierecoach. Deine Aufgabe ist es, aus den folgenden Berufserfahrungen
+  Du bist HR-Spezialist:in für Bewerberauswahl. Deine Aufgabe ist es, aus den folgenden Berufserfahrungen
   die drei relevantesten für die unten stehende Stellenanzeige auszuwählen.
 
-  Bitte gib die drei Erfahrungen exakt im folgenden HTML-Format zurück:
+  Wähle jene Erfahrungen mit dem stärksten fachlichen Bezug zur Stellenausschreibung – insbesondere in Bezug auf Tätigkeitsbereich, Technologien, Tools, Branchenerfahrung und Projektrolle.
 
-  <li>
-    <strong>[Titel der Erfahrung]</strong><br>
-    <em>[Zeitraum]</em><br>
-    [Beschreibung in max. 2 Sätzen]
-  </li>
+  Gib die drei Erfahrungen exakt im folgenden HTML-Format aus:
 
-  Bitte sortiere die Erfahrungen zeitlich absteigend nach den Anfangsdaten.
-  Gib nur die drei HTML-Elemente zurück – ohne Einleitung oder zusätzliche Erläuterungen.
+    <ul>
+      <li>
+        <strong>[Titel der Erfahrung]</strong><br>
+        <em>[Zeitraum]</em><br>
+        [Beschreibung in max. 4 Sätzen]
+      </li>
+      ... (insgesamt 3 Einträge)
+    </ul>
 
-  **Stellenanzeige**:
+
+  Achte darauf, dass die Titel, Zeiträume und Beschreibungen korrekt und vollständig im HTML-Format ausgegeben werden. Die Beschreibung soll höchstens vier Sätze umfassen und sich auf relevante Aufgaben oder Erfahrungen beschränken.
+
+  Sortiere die drei ausgewählten Erfahrungen zeitlich absteigend nach dem Anfangsdatum.
+
+  Gib nur die HTML-Ausgabe im oben genannten Format zurück – ohne Einleitung, Kommentar oder sonstige Erläuterung.
+
+refine_experiences: |
+  Du bist Matching-Expert:in für Bewerberauswahl.
+
+  Stellenanzeige:
   {job_description}
-  
-  **Berufserfahrungen**:
-  {experiences}
+
+  Projektliste aus dem RAG (Top-5):
+  {docs_text}
+
+  Aktuelle Auswahl der Top-3 Berufserfahrungen:
+  {experiences_html}
+
+  Prüfe, ob diese drei Erfahrungen am besten zur Stellenanzeige passen – insbesondere bzgl. Tätigkeitsfeld, Technologie-Stack, Tools, Branchenerfahrung und Rolle.
+
+  Falls ja: Gib die bestehende HTML-Liste unverändert zurück.
+
+  Falls nein: Wähle die drei relevantesten aus den fünf Projekten aus und gib sie im identischen HTML-Format zurück. Die Liste muss genau drei ...-Elemente in einem ... enthalten. Keine Code-Tags, keine Zusatzzeichen.
+
+  Gib ausschließlich die finale HTML-Ausgabe zurück – ohne weitere Kommentare oder Einleitungen.
 
 estimate_match_score: |
-  Bitte bewerte konservativ auf einer Skala von 0 bis 100, wie gut der Bewerber auf die folgende Stellenanzeige passt. Dabei soll ein score von 80 einer sehr gute Übereisntimmung entsprechen. Gehe dabei insbesondere auf diese Punkte ein:
+  match\_score: |
+  Bitte bewerte **extrem** streng auf einer Skala von 0 bis 100, wie gut der Bewerber auf die folgende Stellenanzeige passt. Ein Wert von 80 entspricht einer sehr guten Passung. Werte unter 70 deuten auf eine zu geringe Passgenauigkeit für eine Bewerbung hin.
+
+  Orientiere dich dabei an folgendem Maßstab: Ein Bewerber aus derselben Branche, jedoch **ohne einschlägige relevante Erfahrungen** in den geforderten Bereichen, erhält einen Wert von 10. Vergib **höhere Werte nur bei klar erkennbaren**, direkten Übereinstimmungen.
+
+  Gehe insbesondere auf folgende Punkte ein:
+
   1. Fachliche Übereinstimmung: genutzte Technologien, Frameworks, Methoden
   2. Führungserfahrung: Teamgröße, Art der Verantwortung
   3. Branchen- und Domainwissen
   4. Nachweisbarer Impact / erzielte Ergebnisse
   5. Sprach-, Standort- oder Kulturkompetenz (z.B. Nearshore-Management)
-  
-  Antworte bitte ganz kurz mit einer einzigen Zahl (z.B. `40`). 
-    
+
+  Antworte bitte ganz kurz mit einer einzigen Zahl (z.B. `40`).
+
   Stellenanzeige:
   {job_description}
 
   Relevante Berufserfahrungen:
-
   {experiences}
 
-  Nur die Zahl zurückgeben, keine weiteren Erklärungen.
-
-refine_experiences: |
-  Du bist ein Bewerber-Matching-Experte.
-
-  Stellenanzeige (reduziert):
-  {job_description}
-
-  Roh-Dokumente aus dem RAG (Top-5):
-  {docs_text}
-
-  Aktuelle Auswahl der Top-3 Berufserfahrungen als HTML-Liste:
-  {experiences_html}
-
-  1. Bewerte anhand der Stellenanzeige, ob diese drei Einträge wirklich die relevantesten sind.
-  2. Falls ja, antworte nur mit der unveränderten HTML-Liste.
-  3. Falls nein, wähle aus den obigen 5 Roh-Dokumenten die drei passendsten aus und liefere sie als neue HTML-Liste mit genau drei <li>…</li> zurück.
-  4. Gib ausschließlich die endgültige HTML-Liste zurück (ohne Erklärung).
+  Gib ausschließlich die Zahl zurück – keine weiteren Erklärungen, kein Codeblock.

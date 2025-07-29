@@ -293,7 +293,7 @@ def reduce_pdf_to_essentials(text: str, pdf_path: str, cache_key: str) -> str:
             reduced_final = ""
             for chapter in text:
                 # Prompt-Template holen und füllen
-                template = PROMPTS["reduce_pdf_chapter"]
+                template = PROMPTS["reduce_pdf"]
                 filled = template.format(text=chapter)
                 # Länge prüfen und senden
                 if not validate_prompt_length(filled):
@@ -312,7 +312,7 @@ def reduce_pdf_to_essentials(text: str, pdf_path: str, cache_key: str) -> str:
                 parts = chunk_text_by_tokens(text)
                 reduced_parts = []
                 for p in parts:
-                    tmp = PROMPTS["reduce_pdf_large"].format(text=p)
+                    tmp = PROMPTS["reduce_pdf"].format(text=p)
                     if not validate_prompt_length(tmp):
                         raise ValueError("Chunk-Prompt zu lang")
                     reduced_parts.append(ask_chatgpt_single_prompt(tmp))
@@ -368,7 +368,7 @@ def select_best_heading(headings: list[str]) -> list[str]:
     prompt = template.format(toc=toc)
 
     # API-Call
-    raw = ask_chatgpt_single_prompt(prompt).strip()
+    raw = ask_chatgpt_single_prompt(prompt, "gpt-4o").strip()
 
     # Antwort parsen
     lines = [line.strip() for line in raw.splitlines() if line.strip()]
@@ -456,7 +456,7 @@ def process_pdf(pdf_path: str) -> str:
     if not headings:
         # Falls keine Kapitel gefunden: wie Kurz-PDF behandeln
         reduced = reduce_pdf_to_essentials(full_text, pdf_path, cache_key=key)
-        
+    
     if headings:
         best = select_best_heading(headings)
         #print(f"ℹ️ Wähle Kapitel „{best}“ für Reduktion.")
