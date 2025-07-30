@@ -295,10 +295,12 @@ def reduce_pdf_to_essentials(text: str, pdf_path: str, cache_key: str) -> str:
                 # Prompt-Template holen und füllen
                 template = PROMPTS["reduce_pdf"]
                 filled = template.format(text=chapter)
+                system_prompt = "Du bist ein präziser PDF-Zusammenfassungsassistent."
+                messages = [{"role": "system", "content": system_prompt},{"role": "user",   "content": filled}]
                 # Länge prüfen und senden
                 if not validate_prompt_length(filled):
                     raise ValueError("Kapitel-Prompt zu lang")
-                chunk = ask_chatgpt_single_prompt(filled)
+                chunk = ask_chatgpt_single_prompt(messages)
                 reduced_final += chunk + "\n"
             text = reduced_final.strip()
             template = PROMPTS["reduce_pdf"]
@@ -313,16 +315,20 @@ def reduce_pdf_to_essentials(text: str, pdf_path: str, cache_key: str) -> str:
                 reduced_parts = []
                 for p in parts:
                     tmp = PROMPTS["reduce_pdf"].format(text=p)
+                    system_prompt = "Du bist ein präziser PDF-Zusammenfassungsassistent."
+                    messages = [{"role": "system", "content": system_prompt},{"role": "user",   "content": tmp}]
                     if not validate_prompt_length(tmp):
                         raise ValueError("Chunk-Prompt zu lang")
-                    reduced_parts.append(ask_chatgpt_single_prompt(tmp))
+                    reduced_parts.append(ask_chatgpt_single_prompt(messages))
                 reduced = "\n".join(reduced_parts)
                 save_cached_reduction(cache_key, reduced)
                 print("✅ PDF-Inhalt wurde erfolgreich in Chunks reduziert.")
                 return reduced
 
     # 3) Einfache Reduktion
-    reduced = ask_chatgpt_single_prompt(filled)
+    system_prompt = "Du bist ein präziser PDF-Zusammenfassungsassistent."
+    messages = [{"role": "system", "content": system_prompt},{"role": "user",   "content": filled}]
+    reduced = ask_chatgpt_single_prompt(messages)
     save_cached_reduction(cache_key, reduced)
     print("✅ PDF-Inhalt wurde erfolgreich reduziert.")
     return reduced
@@ -366,9 +372,11 @@ def select_best_heading(headings: list[str]) -> list[str]:
     # Prompt-Template aus YAML holen und with toc befüllen
     template: str = PROMPTS["select_heading"]
     prompt = template.format(toc=toc)
+    system_prompt = "Du bist ein spezialisierter PDF-Kapitel-Selector."
+    messages = [{"role": "system", "content": system_prompt},{"role": "user",   "content": prompt}]
 
     # API-Call
-    raw = ask_chatgpt_single_prompt(prompt, "gpt-4o").strip()
+    raw = ask_chatgpt_single_prompt(messages, "gpt-4o").strip()
 
     # Antwort parsen
     lines = [line.strip() for line in raw.splitlines() if line.strip()]

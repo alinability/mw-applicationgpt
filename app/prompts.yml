@@ -58,7 +58,7 @@ get_3_experiences: |
     </ul>
 
 
-  Achte darauf, dass die Titel, Zeiträume und Beschreibungen korrekt und vollständig im HTML-Format ausgegeben werden. Die Beschreibung soll höchstens vier Sätze umfassen und sich auf relevante Aufgaben oder Erfahrungen beschränken.
+  Achte darauf, dass die Titel, Zeiträume und Beschreibungen korrekt und vollständig im HTML-Format ausgegeben werden. Die Beschreibung soll vier Sätze umfassen und sich auf relevante Aufgaben oder Erfahrungen beschränken.
 
   Sortiere die drei ausgewählten Erfahrungen zeitlich absteigend nach dem Anfangsdatum.
 
@@ -85,25 +85,22 @@ refine_experiences: |
   Gib ausschließlich die finale HTML-Ausgabe zurück – ohne weitere Kommentare oder Einleitungen.
 
 estimate_match_score: |
-  match\_score: |
-  Bitte bewerte **extrem** streng auf einer Skala von 0 bis 100, wie gut der Bewerber auf die folgende Stellenanzeige passt. Ein Wert von 80 entspricht einer sehr guten Passung. Werte unter 70 deuten auf eine zu geringe Passgenauigkeit für eine Bewerbung hin.
+  Bitte bewerte **extrem streng**, auf einer Skala von 0 bis 100, wie gut der Bewerber auf die folgende Stellenanzeige passt. 
 
-  Orientiere dich dabei an folgendem Maßstab: Ein Bewerber aus derselben Branche, jedoch **ohne einschlägige relevante Erfahrungen** in den geforderten Bereichen, erhält einen Wert von 10. Vergib **höhere Werte nur bei klar erkennbaren**, direkten Übereinstimmungen.
+  **Vorgehen (intern, bitte nicht ausgeben):**  
+  1. Vergib für jedes der nachfolgenden Kriterien einen Teilwert von 0–20 Punkten:  
+    - Fachliche Übereinstimmung (Technologien, Frameworks, Methoden)  
+    - Führungserfahrung (Teamgröße, Art der Verantwortung)  
+    - Branchen- und Domainwissen  
+    - Nachweisbarer Impact / erzielte Ergebnisse  
+    - Sprach-, Standort- oder Kulturkompetenz (z.B. Nearshore-Management)  
+  2. Summiere die fünf Teilwerte zu einer Gesamtpunktzahl (0–100).  
 
-  Gehe insbesondere auf folgende Punkte ein:
+  **Ausgabe:**  
+  Gib **ausschließlich** die errechnete Gesamtpunktzahl (eine ganze Zahl zwischen 0 und 100) zurück – **kein** weiteres Feedback, keine Stichpunkte, kein Codeblock.
 
-  1. Fachliche Übereinstimmung: genutzte Technologien, Frameworks, Methoden
-  2. Führungserfahrung: Teamgröße, Art der Verantwortung
-  3. Branchen- und Domainwissen
-  4. Nachweisbarer Impact / erzielte Ergebnisse
-  5. Sprach-, Standort- oder Kulturkompetenz (z.B. Nearshore-Management)
-
-  Antworte bitte ganz kurz mit einer einzigen Zahl (z.B. `40`).
-
-  Stellenanzeige:
+  Stellenanzeige:  
   {job_description}
 
-  Relevante Berufserfahrungen:
+  Relevante Berufserfahrungen:  
   {experiences}
-
-  Gib ausschließlich die Zahl zurück – keine weiteren Erklärungen, kein Codeblock.

@@ -53,9 +53,9 @@ except ImportError:
     from html_generator import generate_kurzprofil_html
     from prompt_utils import save_references_to_txt
 
-INPUT_FOLDER = "../input"
-PERSIST_DIRECTORY = "../data/chroma"
-TEMPLATE_PATH = "../app/templates"
+INPUT_FOLDER = "input" #../
+PERSIST_DIRECTORY = "chroma" #../data/
+TEMPLATE_PATH = "app/templates" #../
 
 def main():
     # 1. Dateien finden

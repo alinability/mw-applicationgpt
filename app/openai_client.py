@@ -23,9 +23,9 @@ if not api_key:
 client = OpenAI(api_key=api_key)
 
 def ask_chatgpt_single_prompt(
-    prompt: str,
+    prompt: list,
     model: str = DEFAULT_MODEL,
-    temperature: float = 0.2,
+    temperature: float = 0.0,
     max_tokens: int = 4096
     ) -> str:
     """
@@ -37,7 +37,7 @@ def ask_chatgpt_single_prompt(
     response = client.chat.completions.create(
         model=model,
         temperature=temperature,
-        messages=[{"role": "user", "content": prompt}],
+        messages=prompt,
         max_tokens=max_tokens
     )
 
@@ -147,6 +147,7 @@ def estimate_match_score(job_description: str, experiences: list[str]) -> int | 
     Gibt die Zahl (0–100) zurück oder None, wenn keine Zahl erkannt wurde.
     Und gibt das Ergebnis im Terminal aus.
     """
+   
     # 1) Liste der Erfahrungen in nummerierten Block umwandeln
     exp_block = "\n".join(f"{idx}. {exp}" for idx, exp in enumerate(experiences, start=1))
 
@@ -159,11 +160,13 @@ def estimate_match_score(job_description: str, experiences: list[str]) -> int | 
     )
 
     # 4) Prompt-Länge validieren
-    if not validate_prompt_length(filled, model=DEFAULT_MODEL, max_tokens=4096):
+    if not validate_prompt_length(filled, model=DEFAULT_MODEL, max_tokens=128000):
         raise ValueError("Prompt für 'estimate_match_score' überschreitet das Token-Limit.")
 
     # 5) Anfrage an ChatGPT
-    response = ask_chatgpt_single_prompt(filled, model=DEFAULT_MODEL, temperature=0.0).strip()
+    system_prompt = "Du bist ein äußerst strenger Bewerber-Matcher mit Fokus auf technische Details."
+    messages = [{"role": "system", "content": system_prompt},{"role": "user",   "content": filled}]
+    response = ask_chatgpt_single_prompt(messages, model="gpt-4o", temperature=0.0)
 
     # 6) Zahl extrahieren
     m = re.search(r"(\d{1,3}(?:\.\d+)?)", response)
@@ -174,45 +177,49 @@ def estimate_match_score(job_description: str, experiences: list[str]) -> int | 
     score = int(max(0, min(100, float(m.group(1)))))
     return score
 
-def refine_experiences_list(job_description: str,
-                            retrieved_docs: list[str],
-                            experiences_html: str) -> str:
+def refine_experiences_list(
+    job_description: str,
+    retrieved_docs: list[str],
+    experiences_html: str
+) -> str:
     """
-    Fragt bei ChatGPT nach, ob die drei HTML-Experience-Einträge 
-    wirklich die relevantesten sind, basierend auf:
-      - der Stellenanzeige (job_description)
-      - den ursprünglichen Retrieval-Dokumenten (retrieved_docs)
-      - der aktuellen HTML-Liste (experiences_html)
-    Gibt immer eine HTML-Liste mit exakt drei <li> zurück.
+    Verfeinert eine gegebene HTML-Liste (<li>) mit genau drei Einträgen.
+    Nutzt eine strikte System-Message und temperature=0 für deterministische Ergebnisse.
+
+    Args:
+        job_description: Der Text der Stellenanzeige.
+        retrieved_docs: Liste der ursprünglichen Retrieval-Dokumente.
+        experiences_html: Aktuelle HTML-Liste mit <li>-Einträgen.
+
+    Returns:
+        Eine HTML-<ul> mit exakt drei <li>, die die relevantesten Erfahrungen repräsentieren.
     """
     # 1) Dokumente nummerieren
-    docs_text = "\n".join(f"{i+1}. {doc}" for i, doc in enumerate(retrieved_docs, start=1))
+    docs_text = "\n".join(f"{i+1}. {doc}" for i, doc in enumerate(retrieved_docs, start=0))
 
-    # 2) Template aus der YAML-Datei laden
+    # 2) Template aus PROMPTS laden
     template: str = PROMPTS["refine_experiences"]
 
     # 3) Prompt befüllen
-    prompt = template.format(
+    user_content = template.format(
         job_description=job_description.strip(),
         docs_text=docs_text,
         experiences_html=experiences_html.strip()
     )
 
-    # 4) Prompt-Länge validieren
-    if not validate_prompt_length(prompt, model=DEFAULT_MODEL, max_tokens=4096):
-        if validate_prompt_length(prompt, model=DEFAULT_MODEL, max_tokens=128000):
-            model = "gpt‑4o‑mini"
-        if not validate_prompt_length(prompt, model=DEFAULT_MODEL, max_tokens=128000):
+    # 4) Prompt-Länge validieren (optional erweitertes Kontext-Modell)
+    model = DEFAULT_MODEL
+    if not validate_prompt_length(user_content, model=DEFAULT_MODEL, max_tokens=4096):
+        model = "gpt-3.5-turbo-16k"
+        if not validate_prompt_length(user_content, model=model, max_tokens=16384):
             raise ValueError("Prompt für 'refine_experiences' überschreitet das Token-Limit.")
 
-    # 5) Anfrage an ChatGPT
-    response = ask_chatgpt_single_prompt(
-        prompt,
-        model=DEFAULT_MODEL,
-        temperature=0.0
-    ).strip()
+    # 5) Anfrage mit System-Message
+    system_prompt = "Du bist ein äußerst strenger Bewerber-Matcher mit Fokus auf technische Details."
+    messages = [{"role": "system", "content": system_prompt},{"role": "user",   "content": user_content}]
+    response = ask_chatgpt_single_prompt(messages, model=model, temperature=0.0)
 
-    return response
+    return response.strip()
 
 def get_response(reduced_text: str, retrieved_docs: str):
     quality_check_rensponse = False
@@ -222,7 +229,9 @@ def get_response(reduced_text: str, retrieved_docs: str):
     while quality_check_rensponse == False and n <= 2:
         
         final_prompt = build_prompt(reduced_text, retrieved_docs)  
-        response = ask_chatgpt_single_prompt(final_prompt)
+        system_prompt = "Du bist ein äußerst strenger Bewerber-Matcher mit Fokus auf technische Details."
+        messages = [{"role": "system", "content": system_prompt},{"role": "user",   "content": final_prompt}]
+        response = ask_chatgpt_single_prompt(messages, model=DEFAULT_MODEL, temperature=0.0)
         response = validate_html_list(response)
         n += 1
     
