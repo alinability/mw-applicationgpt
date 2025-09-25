@@ -210,7 +210,7 @@ def refine_experiences_list(
     # 4) Prompt-Länge validieren (optional erweitertes Kontext-Modell)
     model = DEFAULT_MODEL
     if not validate_prompt_length(user_content, model=DEFAULT_MODEL, max_tokens=4096):
-        model = "gpt-3.5-turbo-16k"
+        model = "gpt-3.5-turbo-16k" #TODO: alle Modelle in eine config Datei schreiben
         if not validate_prompt_length(user_content, model=model, max_tokens=16384):
             raise ValueError("Prompt für 'refine_experiences' überschreitet das Token-Limit.")
 

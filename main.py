@@ -53,26 +53,35 @@ except ImportError:
     from html_generator import generate_kurzprofil_html
     from prompt_utils import save_references_to_txt
 
-INPUT_FOLDER = "input" #../
-PERSIST_DIRECTORY = "chroma" #../data/
-TEMPLATE_PATH = "app/templates" #../
+# Versuch 1: Lokale Docker-Struktur
+try:
+    # Wir vermuten, dass “input/” existiert, wenn wir im Container sind
+    if not os.path.isdir("input"):
+        raise FileNotFoundError
+    INPUT_FOLDER = "input"
+    PERSIST_DIRECTORY = "chroma"
+    TEMPLATE_PATH = "app/templates"
+except FileNotFoundError:
+    INPUT_FOLDER = "../input"
+    PERSIST_DIRECTORY = "../chroma"
+    TEMPLATE_PATH = "../app/templates"
 
 def main():
     # 1. Dateien finden
-    csv_files, pdf_files = find_csv_and_pdf_files(INPUT_FOLDER) 
-    if not csv_files:
+    candidate_profiles, job_postings = find_csv_and_pdf_files(INPUT_FOLDER) 
+    if not candidate_profiles:
         print("⚠️ Keine CSV-Dateien gefunden.")
         return
-    if not pdf_files:
+    if not job_postings:
         print("⚠️ Keine PDF-Dateien gefunden.")
         return
 
     # 2. Chroma-Collection erzeugen oder laden
-    new_data = False  # Ändern, fals neue Erfarungen aus der csv eingelesen werden sollen. 
-    collection = csv_to_db(csv_files, PERSIST_DIRECTORY, new_data)
+    new_data = True  # Ändern, fals neue Erfarungen aus der csv eingelesen werden sollen. 
+    collection = csv_to_db(candidate_profiles, PERSIST_DIRECTORY, new_data)
 
     # 3. Für jede PDF-Stellenanzeige
-    for pdf_path in pdf_files:
+    for pdf_path in job_postings:
         job_title = os.path.basename(pdf_path).replace(".pdf", "")
         print(f"📨 Bearbeite Stellenanzeige: {job_title}")
 
@@ -93,6 +102,7 @@ def main():
         save_references_to_txt(pdf_path, reduced_text, retrieved_docs, response, output_dir="output")
         
         # 3.d Statische Profildaten definieren
+        #ToDo: Diese Daten tatäschlich aus dem Mittarbeiterprofil ziehen!
         static_info = {
             "name": "Marcel Russ",
             "title": "Teamleiter Mobile & Web",

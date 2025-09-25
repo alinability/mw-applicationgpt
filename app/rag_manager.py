@@ -143,7 +143,7 @@ def create_collection(name: str = "bewerbung",
 
 def validate_retrieved_docs(docs):
     """
-    Prüft, ob `docs` eine Liste mit genau drei nicht-leeren Strings ist.
+    Prüft, ob `docs` eine Liste mit genau drei nicht-leeren Strings ist (Eintäger in der Projektliste).
     Gibt True zurück, wenn alles OK ist, sonst False.
     """
     # 1) Liste?

@@ -439,7 +439,8 @@ def process_pdf(pdf_path: str) -> str:
     - Liest PDF, falls ≤3 Seiten: Volltext → reduce.
     - Falls >3 Seiten: sucht Kapitel, fragt ChatGPT, extrahiert bestes Kapitel → reduce.
     """
-    # 1) Cache-Key prüfen
+    
+    # 1) Cache-Key prüfen #TODO: Auch ähnliche datein aus dem Cache abrufen. Nicht nur Namne als Identificator
     key = make_key_from_file(pdf_path)
     cached = load_cached_reduction(key)
     if cached is not None:
