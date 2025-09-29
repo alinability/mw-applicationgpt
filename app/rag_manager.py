@@ -69,13 +69,33 @@ def add_dataframe_to_chroma(df: pd.DataFrame, collection, source_id: str = "resu
             continue
 
         documents.append(full_text)
-        metadatas.append({"source": source_id})
+        meta = {"source": source_id}
+        # Technologien aus mehreren Spalten zusammenführen
+        technology_fields = ["tools", "knowledge", "tags"]
+        technologies = []
+
+        for field in technology_fields:
+            if field in df.columns and pd.notnull(row.get(field)):
+                items = str(row[field]).replace("\n", ",").split(",")
+                technologies.extend(item.strip() for item in items if item.strip())
+
+        # Deduplizieren und als String speichern
+        technologies = list(set(technologies))
+        meta["technologies"] = ", ".join(technologies)
+
+        for key in ("job_title", "company", "start_date", "end_date", "tools", "frameworks", "languages"):
+            if key in df.columns and pd.notnull(row.get(key, None)):
+                meta[key] = str(row[key]).strip()
+        if "branche" in df.columns and pd.notnull(row.get("branche", None)):
+            meta["industry"] = str(row["branche"]).strip()
+        meta["document_title"] = parts[0] if parts else "Erfahrung"
+        metadatas.append(meta)
         ids.append(uid)
 
     # DEBUG: Was wird hinzugefügt?
-    for doc in documents:
-        snippet = doc.replace("\n", " ")
-        print("  →", (snippet[:80] + "…") if len(snippet) > 80 else snippet)
+    #for doc in documents:
+        #snippet = doc.replace("\n", " ")
+        #print("  →", (snippet[:80] + "…") if len(snippet) > 80 else snippet)
 
     if documents:
         collection.add(documents=documents, metadatas=metadatas, ids=ids)
@@ -84,7 +104,7 @@ def add_dataframe_to_chroma(df: pd.DataFrame, collection, source_id: str = "resu
         print("⚠️ Keine neuen Dokumente hinzugefügt (alle bereits vorhanden?).")
 
 
-def query_relevant_entries(collection, query: str, n_results: int = 5) -> list[str]:
+def query_relevant_entries(collection, query: str, n_results: int = 5, metadata_filter: dict = None) -> list[str]:
     """
     Fragt die Chroma-Collection nach den relevantesten Dokumenten zur gegebenen Anfrage ab.
     Technologische Anforderungen und Frameworks werden automatisch mitgewichtet.
@@ -113,10 +133,17 @@ def query_relevant_entries(collection, query: str, n_results: int = 5) -> list[s
     augmented_query = f"{tech_focus}\n\n{query}"
 
     # 3) Vektor-Suche durchführen
-    results = collection.query(
-        query_texts=[augmented_query],
-        n_results=n_results
-    )
+    if metadata_filter:
+        results = collection.query(
+            query_texts=[augmented_query],
+            n_results=n_results,
+            where=metadata_filter
+        )
+    else:
+        results = collection.query(
+            query_texts=[augmented_query],
+            n_results=n_results
+        )
     docs = results.get("documents", [[]])[0]
 
     # 4) Duplikate entfernen und leere Einträge filtern
@@ -168,6 +195,7 @@ def csv_to_db(csv_files: list, persist_dir: str = persist_dir, new_data: bool = 
         )
 
         # CSVs ins RAG laden
+        added_ids = []
         for csv_path in csv_files:
             df = load_resume_data(csv_path)
             add_dataframe_to_chroma(
@@ -175,7 +203,10 @@ def csv_to_db(csv_files: list, persist_dir: str = persist_dir, new_data: bool = 
                 collection,
                 source_id=os.path.basename(csv_path)
             )
-            print("✅ PDF und CSV-Dateien erfolgreich verarbeitet und ins RAG eingefügt.")
+            # Sammle alle IDs aus dem DataFrame für Rückgabe
+            for idx in df.index:
+                added_ids.append(f"{os.path.basename(csv_path)}_{idx}")
+        print("✅ PDF und CSV-Dateien erfolgreich verarbeitet und ins RAG eingefügt.")
     else:
         # Bestehende Collection laden
         print("🔄 Lade aus bestehender Collection.")
@@ -183,7 +214,8 @@ def csv_to_db(csv_files: list, persist_dir: str = persist_dir, new_data: bool = 
         name="bewerbung",
         persist_directory=persist_dir
         )
-    return collection
+        added_ids = []
+    return collection, added_ids
 
 def get_docs(collection: chromadb.api.models.Collection.Collection, reduced_text: str):
     quality_check_docs = False
@@ -193,7 +225,7 @@ def get_docs(collection: chromadb.api.models.Collection.Collection, reduced_text
         retrieved_docs = query_relevant_entries(
             collection=collection,
             query=reduced_text,
-            n_results=5
+            n_results=8
         )  # rag_manager
         quality_check_docs = validate_retrieved_docs(retrieved_docs)
         n += 1

@@ -1,26 +1,28 @@
 **Tätigkeitsbereich**
-- Beratungsdienstleistungen im Energiehandel
+- Implementierung einer neuen Softwarelösung \[Muss]
+- Weiterentwicklung einer bestehenden Softwareplattform bzw. eingesetzter Softwarelösung \[Muss]
+- Erstellung von Business Case / Plan / Analyse \[Muss]
+- Migration einer bestehenden Softwarelösung / Datentransfer \[Muss]
+- IT-Prozess-Design und -Optimierung \[Muss]
 
 **Aufgabenbereich**
-- Design von User Interfaces (Muss)
-- Anwendung von Human-Centered-Design Methodiken (Muss)
-- Aufbereitung der UX-Insights (Muss)
-- Kommunikation mit verschiedenen Stakeholdern (Muss)
-- Mitarbeit an professioneller Softwareentwicklung (Muss)
-- Web-Entwicklung (JavaScript inkl. Frameworks, HTML, CSS) (Muss)
-- Arbeit mit Design Systemen (Muss)
-- Fachkenntnisse im Energiehandel (Muss)
+- Design > Machbarkeitsprüfung und Aufwandschätzung \[Muss]
+- Planung von neuen Features / Bug-Fixes \[Muss]
+- Erstellung, Durchführung und Dokumentation von Usability Tests \[Muss]
+- Ad hoc Bearbeitung von priorisierten Issues \[Muss]
+- Teilnahme an definierten Ritualen und Workshops \[Muss]
+- Teilnahme an wöchentlicher Trading Workbench-Statusrunde \[Muss]
 
 **Programmiersprachen und Versionen**
-- JavaScript inkl. Frameworks (Muss)
-- HTML (Muss)
-- CSS (Muss)
+- JavaScript inkl. Frameworks \[Muss]
+- HTML \[Muss]
+- CSS \[Muss]
 
 **Frameworks und Bibliotheken**
-- Figma (Muss)
+- Figma \[Muss]
 
 **Tools und Plattformen**
-- Gangige Prototyping-Tools wie Figma (Muss)
+- Azure DevOps-Tasks \[Muss]
 
 **Schnittstellen oder APIs und Protokolle**
-- Nicht spezifiziert
+- Keine Informationen

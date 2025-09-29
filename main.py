@@ -77,8 +77,8 @@ def main():
         return
 
     # 2. Chroma-Collection erzeugen oder laden
-    new_data = False  # Ändern, fals neue Erfarungen aus der csv eingelesen werden sollen. 
-    collection = csv_to_db(candidate_profiles, PERSIST_DIRECTORY, new_data)
+    new_data = True # Ändern, fals neue Erfarungen aus der csv eingelesen werden sollen. 
+    collection, _ = csv_to_db(candidate_profiles, PERSIST_DIRECTORY, new_data)
 
     # 3. Für jede PDF-Stellenanzeige
     for pdf_path in job_postings:
