@@ -44,45 +44,62 @@ get_3_experiences: |
   Du bist HR-Spezialist:in für Bewerberauswahl. Deine Aufgabe ist es, aus den folgenden Berufserfahrungen
   die drei relevantesten für die unten stehende Stellenanzeige auszuwählen.
 
-  Wähle jene Erfahrungen mit dem stärksten fachlichen Bezug zur Stellenausschreibung – insbesondere in Bezug auf Tätigkeitsbereich, Technologien, Tools, Branchenerfahrung und Projektrolle.
+  Nutze ausschließlich die realen Informationen aus den Projektbeschreibungen im Input. Verwende keine Fantasie-Firmennamen, keine generischen Begriffe wie „TechCorp“ oder „diverse Tools“, sondern die echten Einträge aus der Datenbasis.
 
-  Gib die drei Erfahrungen exakt im folgenden HTML-Format aus:
+  Relevanzkriterien:
+  - Tätigkeitsbereich
+  - Projektrolle(n)
+  - Branchenerfahrung und Firma
+  - eingesetzte Technologien, Frameworks und Tools
+  - Methodik (z. B. Agile, Scrum, DevOps etc.)
+
+  Gib die drei relevantesten Erfahrungen exakt im folgenden HTML-Format aus:
 
     <ul>
       <li>
-        <strong>[Titel der Erfahrung]</strong><br>
-        <em>[Zeitraum]</em><br>
-        [Beschreibung in max. 4 Sätzen]
+        <p><em>[Zeitraum]</em><br>
+        <em>[Firma], [Branche]</em></p>
+        <p>[Fließtext mit 3–5 Sätzen: Ziel, Kontext, Rolle, Technologien, Ergebnis]</p>
       </li>
       ... (insgesamt 3 Einträge)
     </ul>
 
+  Achte auf einen klaren, zusammenhängenden Fließtext mit 3–5 Sätzen. Keine Bulletpoints, keine Aufzählungen. Keine Titelzeilen oder Technologielisten außerhalb des Fließtexts.
 
-  Achte darauf, dass die Titel, Zeiträume und Beschreibungen korrekt und vollständig im HTML-Format ausgegeben werden. Die Beschreibung soll vier Sätze umfassen und sich auf relevante Aufgaben oder Erfahrungen beschränken.
+  Das ist die Liste der Berufserfahrungen: {experiences}
 
-  Sortiere die drei ausgewählten Erfahrungen zeitlich absteigend nach dem Anfangsdatum.
-
-  Gib nur die HTML-Ausgabe im oben genannten Format zurück – ohne Einleitung, Kommentar oder sonstige Erläuterung.
+  Das ist die Zusammenfassung der Stellenauschreibung: {job_description}
 
 refine_experiences: |
   Du bist Matching-Expert:in für Bewerberauswahl.
 
-  Stellenanzeige:
-  {job_description}
+  Ziel: Stelle sicher, dass die 3 gewählten Erfahrungen aus den Top-5 optimal zur Stellenanzeige passen – besonders in Bezug auf:
+  - Tätigkeitsbereich
+  - Technologie-Stack & Tools
+  - Branchenerfahrung & Firma
+  - Projektrolle(n)
+  - Methodik (Scrum, DevOps, etc.)
 
-  Projektliste aus dem RAG (Top-5):
-  {docs_text}
+  Falls ja: Gib die bestehende HTML-Liste **unverändert** zurück.
 
-  Aktuelle Auswahl der Top-3 Berufserfahrungen:
-  {experiences_html}
+  Falls nein: Ersetze sie durch die drei relevantesten Einträge aus der Projektliste. Formatiere sie identisch, aber achte auf:
+  - konkrete Firmen- und Branchennennung
+  - präzise Rollen und Technologien
+  - knappe, fokussierte Beschreibung des Projekts und des Beitrags (3–5 Sätze im Fließtext)
+  Achte darauf, dass die Angaben zu Firma, Branche, Zeitraum, Technologie-Stack und Rollen exakt mit den Metadaten der zugrunde liegenden CSV-Einträge übereinstimmen.
 
-  Prüfe, ob diese drei Erfahrungen am besten zur Stellenanzeige passen – insbesondere bzgl. Tätigkeitsfeld, Technologie-Stack, Tools, Branchenerfahrung und Rolle.
+  Gib **ausschließlich** die finale HTML-Ausgabe im folgenden Format zurück – ohne zusätzliche Zeichen oder Kommentare.
 
-  Falls ja: Gib die bestehende HTML-Liste unverändert zurück.
+  <ul>
+    <li>
+      <p><em>[Zeitraum]</em><br>
+      <em>[Firma], [Branche]</em></p>
+      <p>[Fließtext mit 3–5 Sätzen: Ziel, Kontext, Rolle, Technologien, Ergebnis]</p>
+    </li>
+    ...
+  </ul>
 
-  Falls nein: Wähle die drei relevantesten aus den fünf Projekten aus und gib sie im identischen HTML-Format zurück. Die Liste muss genau drei ...-Elemente in einem ... enthalten. Keine Code-Tags, keine Zusatzzeichen.
-
-  Gib ausschließlich die finale HTML-Ausgabe zurück – ohne weitere Kommentare oder Einleitungen.
+  Achte auf flüssige, vollständige Fließtexte mit 3–5 Sätzen pro Eintrag. Keine Titelzeilen, keine Technologielisten, keine Stichpunkte oder unvollständige Aussagen.
 
 estimate_match_score: |
   Bitte bewerte **extrem streng**, auf einer Skala von 0 bis 100, wie gut der Bewerber auf die folgende Stellenanzeige passt. 
@@ -93,7 +110,7 @@ estimate_match_score: |
     - Führungserfahrung (Teamgröße, Art der Verantwortung)  
     - Branchen- und Domainwissen  
     - Nachweisbarer Impact / erzielte Ergebnisse  
-    - Sprach-, Standort- oder Kulturkompetenz (z.B. Nearshore-Management)  
+    - Sprach-, Standort- oder Kulturkompetenz (z. B. Nearshore-Management, Sprachkenntnisse aus Metadaten)  
   2. Summiere die fünf Teilwerte zu einer Gesamtpunktzahl (0–100).  
 
   **Ausgabe:**  
@@ -104,3 +121,5 @@ estimate_match_score: |
 
   Relevante Berufserfahrungen:  
   {experiences}
+
+  (Alle Informationen basieren auf der CSV-Quelle. Verlasse dich auf die tatsächlichen Inhalte und Namen.)

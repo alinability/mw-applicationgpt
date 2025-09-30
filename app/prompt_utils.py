@@ -2,6 +2,9 @@ import tiktoken
 import os
 
 DEFAULT_MODEL = "gpt-3.5-turbo"
+DEFAULT_MODEL_TOKEN_LIMIT = 4096
+DEFAULT_LARGE_MODEL = "gpt-3.5-turbo-16k"
+DEFAULT_LARGE_MODEL_TOKEN_LIMIT = 16384
 
 def chunk_text_by_tokens(text, max_tokens =  4096, model=DEFAULT_MODEL):
     """

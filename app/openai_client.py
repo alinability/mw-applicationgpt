@@ -5,7 +5,7 @@ load_dotenv(find_dotenv())
 import os
 import re
 from openai import OpenAI
-from prompt_utils import count_tokens, DEFAULT_MODEL
+from prompt_utils import count_tokens, DEFAULT_MODEL, DEFAULT_MODEL_TOKEN_LIMIT, DEFAULT_LARGE_MODEL, DEFAULT_LARGE_MODEL_TOKEN_LIMIT
 import yaml
 from pathlib import Path
 
@@ -26,7 +26,7 @@ def ask_chatgpt_single_prompt(
     prompt: list,
     model: str = DEFAULT_MODEL,
     temperature: float = 0.0,
-    max_tokens: int = 4096
+    max_tokens: int = DEFAULT_MODEL_TOKEN_LIMIT
     ) -> str:
     """
     Sendet einen einzelnen Prompt an ChatGPT und gibt den Text zurück.
@@ -50,10 +50,11 @@ def ask_chatgpt_single_prompt(
 def validate_prompt_length(
     prompt: str,
     model: str = DEFAULT_MODEL,
-    max_tokens: int = 4096
+    max_tokens: int = DEFAULT_MODEL_TOKEN_LIMIT
     ):
     """Prüft, ob der Prompt die maximale Token-Länge überschreitet."""
     token_count = count_tokens(prompt, model=model)
+    
     if token_count > max_tokens:
         return False
     return True
@@ -62,7 +63,7 @@ def build_prompt(
     job_text: str,
     experiences: list[str],
     model: str = DEFAULT_MODEL,
-    max_tokens: int = 4096
+    max_tokens: int = DEFAULT_MODEL_TOKEN_LIMIT
 ) -> str:
     """
     Baut einen Prompt zur Auswahl der 3 relevantesten Erfahrungen
@@ -82,21 +83,38 @@ def build_prompt(
     )
     # 4) Prompt-Länge prüfen
     if not validate_prompt_length(filled_prompt, model=model, max_tokens=max_tokens):
-        raise ValueError(
-            f"Prompt für 'get_3_experiences' ist zu lang ({max_tokens} Token max)."
-        )
-    return filled_prompt
+        if validate_prompt_length(filled_prompt, model=DEFAULT_LARGE_MODEL, max_tokens=DEFAULT_LARGE_MODEL_TOKEN_LIMIT):
+            model = DEFAULT_LARGE_MODEL
+        else:
+            raise ValueError(
+                f"Prompt für 'get_3_experiences' ist zu lang ({max_tokens} Token max)."
+            )
+    return filled_prompt, model
 
 def is_wrapped_with_same_tag(html: str) -> bool:
     """
-    Prüft, ob `html` mit <tag>…</tag> umschlossen ist, wobei 'tag' an beiden Stellen identisch sein muss.
+    Prüft, ob das HTML korrekt verschachtelte und abgeschlossene Tags enthält.
+    Es wird geprüft, ob jede öffnende Tag in der richtigen Reihenfolge wieder geschlossen wird.
     """
     html = html.strip()
-    m = re.match(r'^<\s*([A-Za-z0-9]+)(?:\s+[^>]*)?>', html)
-    if not m:
-        return False
-    tag = m.group(1)
-    return bool(re.search(rf'</\s*{re.escape(tag)}\s*>$', html))
+    void_elements = {
+    "area", "base", "br", "col", "embed", "hr", "img",
+    "input", "link", "meta", "source", "track", "wbr"
+    }
+    tag_stack = []
+    tag_pattern = re.compile(r'<(\/)*(\w+)>')
+
+    for element in re.findall(tag_pattern,html):
+        if element[1] in void_elements:
+                continue
+        elif element[0] == '':
+            tag_stack.append(element[1])
+        elif element[0] == "/":
+            if element[1] == tag_stack[-1]:
+                tag_stack.pop()
+            else:
+                return False
+    return html
 
 def validate_html_list(response: str) -> bool:
     """
@@ -106,16 +124,17 @@ def validate_html_list(response: str) -> bool:
 
     # 1) Entferne mögliche Markdown-Codefences
     
-    # html → Zeilenumbruch
-    clean = re.sub(r'html', '\n', response)
-    
+    # Entferne alle ```html und ``` Codefence-Blöcke, egal wo sie stehen
+    clean = re.sub(r"```html\s*", "", response, flags=re.IGNORECASE)
+    clean = re.sub(r"```", "", clean)
+
     # am Zeilenanfang oder -ende beliebig viele ' löschen
     clean = re.sub(r"(\s)*(`)+(\n)*", "", clean)
 
     # 2) Entferne komplett leere Zeilen oder solche mit nur Whitespace
     #    (?m) aktiviert den Multiline-Mode, sodass ^/$ auf Zeilenanfang/-ende abzielen
     clean = re.sub(r'(?m)^[ \t]*\n', '', clean)
-
+    
     # 3) Überprüfe, ob die Liste richtig mit <ul>…</ul> oder <ol>…</ol> umschlossen ist
     if bool(is_wrapped_with_same_tag(clean)) == False:
         print("❌ Keine korrekt formatierte HTML-Liste gefunden (fehlende umschließenden <il>/<ul>/<ol>-Tags).")
@@ -123,11 +142,10 @@ def validate_html_list(response: str) -> bool:
         return False
 
     # 4) Finde alle <li>…</li>
-    items = re.findall(r'<li\b[^>]*>(.*?)</li>', clean, flags=re.DOTALL | re.IGNORECASE)
+    items = re.findall(r'<(li)>', clean, flags=re.DOTALL | re.IGNORECASE)
     if len(items) != 3:
         print(f"❌ Liste enthält {len(items)} Einträge, erwartet werden genau 3.")
-        print(response)
-        return False
+
 
     # 5) Prüfe, dass jeder Eintrag nicht nur aus Tags besteht, sondern echten Text enthält
     for idx, inner in enumerate(items, start=1):
@@ -136,6 +154,7 @@ def validate_html_list(response: str) -> bool:
             print(f"❌ Listeneintrag {idx} ist leer.")
             return False
         
+    #print(f"✅ Validierte HTML-Liste:\n{clean[:300]}")
     return clean
 
 def estimate_match_score(job_description: str, experiences: list[str]) -> int | None:
@@ -200,18 +219,25 @@ def refine_experiences_list(
     # 2) Template aus PROMPTS laden
     template: str = PROMPTS["refine_experiences"]
 
+    # Safety: ensure experiences_html is a string
+    if isinstance(experiences_html, str):
+        exp_html_str = experiences_html.strip()
+    else:
+        print("❌ refine_experiences_list: Kein gültiger HTML-String erhalten.")
+        return False
+
     # 3) Prompt befüllen
     user_content = template.format(
         job_description=job_description.strip(),
         docs_text=docs_text,
-        experiences_html=experiences_html.strip()
+        experiences_html=exp_html_str
     )
 
     # 4) Prompt-Länge validieren (optional erweitertes Kontext-Modell)
     model = DEFAULT_MODEL
-    if not validate_prompt_length(user_content, model=DEFAULT_MODEL, max_tokens=4096):
-        model = "gpt-3.5-turbo-16k" #TODO: alle Modelle in eine config Datei schreiben
-        if not validate_prompt_length(user_content, model=model, max_tokens=16384):
+    if not validate_prompt_length(user_content, model=DEFAULT_MODEL, max_tokens=DEFAULT_MODEL_TOKEN_LIMIT):
+        model = DEFAULT_LARGE_MODEL #TODO: alle Modelle in eine config Datei schreiben
+        if not validate_prompt_length(user_content, model=model, max_tokens=DEFAULT_LARGE_MODEL_TOKEN_LIMIT):
             raise ValueError("Prompt für 'refine_experiences' überschreitet das Token-Limit.")
 
     # 5) Anfrage mit System-Message
@@ -227,14 +253,13 @@ def get_response(reduced_text: str, retrieved_docs: str):
     
     # Prompt bauen und an ChatGPT senden
     while quality_check_rensponse == False and n <= 2:
-        
-        final_prompt = build_prompt(reduced_text, retrieved_docs)  
+        final_prompt, model = build_prompt(reduced_text, retrieved_docs)  
         system_prompt = "Du bist ein äußerst strenger Bewerber-Matcher mit Fokus auf technische Details."
         messages = [{"role": "system", "content": system_prompt},{"role": "user",   "content": final_prompt}]
-        response = ask_chatgpt_single_prompt(messages, model=DEFAULT_MODEL, temperature=0.0)
+        response = ask_chatgpt_single_prompt(messages, model=model, temperature=0.0)
         response = validate_html_list(response)
         n += 1
-    
+
     if response == False:
         print("❌ ChatGPT Anfrage nicht wie erwartet.")
 

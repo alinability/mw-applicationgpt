@@ -24,16 +24,19 @@ def parse_chatgpt_response_to_experiences(html_list: str) -> list[dict[str, str]
         duration_match = re.search(r'<em\b[^>]*>(.*?)</em>', item, flags=re.DOTALL | re.IGNORECASE)
         duration = duration_match.group(1).strip() if duration_match else ""
 
-        # 4) Beschreibung: roher Text ohne HTML, ohne Titel/Dauer
-        #    a) alle HTML-Tags entfernen
-        text = re.sub(r'<[^>]+>', '', item, flags=re.DOTALL).strip()
-        #    b) Titel und Dauer aus dem Text löschen, falls sie noch drinstehen
-        if title:
-            text = text.replace(title, "", 1).strip()
-        if duration:
-            text = text.replace(duration, "", 1).strip()
-        #    c) führende/trailing Trennzeichen säubern
-        description = re.sub(r'^[\s\-\–\—\:]+|[\s\-\–\—\:]+$', '', text)
+        # 4) Beschreibung: letzten <p>-Block als Fließtext extrahieren
+        paragraphs = re.findall(r'<p\b[^>]*>(.*?)</p>', item, flags=re.DOTALL | re.IGNORECASE)
+        description = ""
+        if paragraphs:
+            last_paragraph = paragraphs[-1]
+            # Entferne Titel, Dauer, Technologien
+            last_paragraph = re.sub(r'<[^>]+>', '', last_paragraph).strip()
+            if title:
+                last_paragraph = last_paragraph.replace(title, "").strip()
+            if duration:
+                last_paragraph = last_paragraph.replace(duration, "").strip()
+            last_paragraph = re.sub(r'^Technologien\s*:\s*', '', last_paragraph, flags=re.IGNORECASE)
+            description = last_paragraph
 
         experiences.append({
             "title": title,
