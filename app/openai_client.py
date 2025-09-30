@@ -232,7 +232,7 @@ def refine_experiences_list(
         docs_text=docs_text,
         experiences_html=exp_html_str
     )
-
+    
     # 4) Prompt-Länge validieren (optional erweitertes Kontext-Modell)
     model = DEFAULT_MODEL
     if not validate_prompt_length(user_content, model=DEFAULT_MODEL, max_tokens=DEFAULT_MODEL_TOKEN_LIMIT):

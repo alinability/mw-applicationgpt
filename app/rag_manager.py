@@ -225,7 +225,7 @@ def get_docs(collection: chromadb.api.models.Collection.Collection, reduced_text
         retrieved_docs = query_relevant_entries(
             collection=collection,
             query=reduced_text,
-            n_results=8
+            n_results=5
         )  # rag_manager
         quality_check_docs = validate_retrieved_docs(retrieved_docs)
         n += 1

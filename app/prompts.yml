@@ -101,6 +101,12 @@ refine_experiences: |
 
   Achte auf flüssige, vollständige Fließtexte mit 3–5 Sätzen pro Eintrag. Keine Titelzeilen, keine Technologielisten, keine Stichpunkte oder unvollständige Aussagen.
 
+  Das ist die aktuelle Auswahl: {experiences_html}
+
+  Das ist die Liste der Berufserfahrungen: {docs_text}
+
+  Das ist die Zusammenfassung der Jobausschreibung: {job_description}
+
 estimate_match_score: |
   Bitte bewerte **extrem streng**, auf einer Skala von 0 bis 100, wie gut der Bewerber auf die folgende Stellenanzeige passt. 
 
