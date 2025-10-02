@@ -107,7 +107,8 @@ def main():
             "name": "Marcel Russ",
             "title": "Teamleiter Mobile & Web",
             "skills": "Agile Softwareentwicklung, Teamführung, Mobile & Web, Nearshore-Management",
-            "languages": "Deutsch (Muttersprache), Englisch (verhandlungssicher)"
+            "languages": "Deutsch (Muttersprache), Englisch (verhandlungssicher)",
+            "description": "Der Bewerber verbindet Effizienz und Innovationskraft, um nachhaltige und wirkungsvolle digitale Lösungen zu entwickeln. Mit Erfahrung in der mobilen App-Entwicklung, im Enterprise Software Engineering sowie in agilen Transformationsprozessen hat er branchenübergreifend an vielfältigen Projekten gearbeitet. Dabei übernimmt er sowohl technische Führungsverantwortung als auch die Optimierung von Arbeitsabläufen und die Entwicklung maßgeschneiderter Tools. Sein Fokus liegt stets auf skalierbaren, benutzerzentrierten und umweltbewussten Lösungen, die den aktuellen Best Practices entsprechen."
         }
 
         # 3.e Kurzprofil HTML erzeugen

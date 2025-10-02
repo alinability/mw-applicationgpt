@@ -6,20 +6,49 @@
   <style>
     body {
       font-family: "Segoe UI", sans-serif;
-      margin: 60px auto;
+      margin: 40px auto;
       max-width: 900px;
       background-color: #fff;
       color: #222;
       line-height: 1.6;
       padding: 40px;
-      border: 1px solid #ccc;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      border: 2px solid rgb(120,186,150); /* neues CI-Grün für Rahmen */
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    .profile-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+      margin-left: auto;
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+
+    .profile-pic {
+      border-radius: 5px;
+      height: 160px;
+      width: 160px;
+      object-fit: cover;
+      margin-right: 20px;
+      margin-left: 0;
+      border: 3px solid rgb(120,98,186); /* neues CI-Violett für Foto-Rahmen */
     }
 
     h1 {
       font-size: 28px;
       font-weight: bold;
       margin-bottom: 5px;
+      color: rgb(120,186,150); /* Überschrift in neuem CI-Grün */
     }
 
     .section-header {
@@ -27,8 +56,9 @@
       font-weight: bold;
       margin-top: 40px;
       margin-bottom: 15px;
-      border-bottom: 1px solid #ccc;
+      border-bottom: 3px solid rgb(120,98,186); /* Akzentlinie in neuem CI-Violett */
       padding-bottom: 5px;
+      color: rgb(120,186,150);
     }
 
     .profile-info p {
@@ -48,6 +78,7 @@
       font-size: 16px;
       display: block;
       margin-bottom: 3px;
+      color: rgb(120,186,150);
     }
 
     li em {
@@ -61,19 +92,40 @@
     li p {
       margin: 0;
     }
+
+    .profile-description {
+      margin-top: 30px;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #444;
+    }
   </style>
 </head>
 <body>
-  <h1>{{ name }}</h1>
-  <div class="profile-info">
-    <p><strong>Beruf:</strong> {{ title }}</p>
-    <p><strong>Schwerpunkte:</strong> {{ skills }}</p>
-    <p><strong>Sprachen:</strong> {{ languages }}</p>
+  <div class="profile-header">
+    <div style="display: flex; align-items: center;">
+      <img src="marcel.jpeg" alt="Bewerberfoto" class="profile-pic">
+      <div>
+        <h1>{{ name }}</h1>
+        <div class="profile-info">
+          <p><strong>Beruf:</strong> {{ title }}</p>
+          <p><strong>Schwerpunkte:</strong> {{ skills }}</p>
+          <p><strong>Sprachen:</strong> {{ languages }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="logo">
+      <img src="Logo-BW.png" alt="Mehr.Wert Logo">
+    </div>
+  </div>
+
+  <div class="profile-description">
+    {{ description }}
   </div>
 
   <div class="section-header">Relevante Berufserfahrungen</div>
-    <ol>
+  <ol>
     {{ experiences_html | safe }}
-    </ol>
+  </ol>
 </body>
 </html>

@@ -2,6 +2,7 @@ import os
 import re
 from jinja2 import Environment, FileSystemLoader
 from datetime import datetime
+from weasyprint import HTML, CSS
 
 def parse_chatgpt_response_to_experiences(html_list: str) -> list[dict[str, str]]:
     """
@@ -85,21 +86,59 @@ def generate_kurzprofil_html(static_info: dict,
     env = Environment(loader=FileSystemLoader(template_path))
     template = env.get_template("kurzprofil_template.html")
 
+    # Schriftgröße im Body etwas verkleinern, einheitlich für alle Texte
+    style_block = """
+    <style>
+      body {
+        font-size: 11px;
+        line-height: 1.4;
+      }
+      h1, h2, h3, .section-header, li strong, li em, .profile-description {
+        font-size: 11px !important;
+      }
+    </style>
+    """
     # 2. Rendern
-    rendered_html = template.render(
+    rendered_html = style_block + template.render(
         name=static_info["name"],
         title=static_info["title"],
         skills=static_info["skills"],
         languages=static_info["languages"],
-        experiences_html=experiences#_html
+        description=static_info.get("description", ""),
+        experiences_html=experiences,
+        logo_path=os.path.abspath(os.path.join(template_path, "Logo-BW.png")),
+        photo_path=os.path.abspath(os.path.join(template_path, "marcel.jpeg"))
     )
 
     # 6. Speichern
     safe_name = f"{static_info['name'].replace(' ', '_')}_{job_title}"
-    output_path = os.path.join(output_dir, f"Kurzprofil_{safe_name}.html")
-    os.makedirs(output_dir, exist_ok=True)
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write(rendered_html)
+    output_html = os.path.join(output_dir, f"Kurzprofil_{safe_name}.html")
+    output_pdf = os.path.join(output_dir, f"Kurzprofil_{safe_name}.pdf")
 
-    print(f"✅ HTML-Kurzprofil gespeichert unter: {output_path}")
-    return output_path
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Speichern als HTML (auskommentiert)
+    # with open(output_html, "w", encoding="utf-8") as f:
+    #     f.write(rendered_html)
+
+    # Konvertieren in PDF mit base_url, damit Bilder (Logo & Foto) korrekt eingebunden werden
+    HTML(string=rendered_html, base_url=template_path).write_pdf(
+        output_pdf,
+        stylesheets=[CSS(string="""
+            @page {
+                size: A4;
+                margin: 1.5cm;
+            }
+            body {
+                font-size: 11px;
+                line-height: 1.4;
+            }
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+        """)]
+    )
+
+    print(f"✅ HTML-Kurzprofil gespeichert unter: {output_html}")
+    print(f"✅ PDF-Kurzprofil gespeichert unter: {output_pdf}")
+    return output_pdf

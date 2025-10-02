@@ -59,12 +59,12 @@ get_3_experiences: |
       <li>
         <p><em>[Zeitraum]</em><br>
         <em>[Firma], [Branche]</em></p>
-        <p>[Fließtext mit 3–5 Sätzen: Ziel, Kontext, Rolle, Technologien, Ergebnis]</p>
+        <p>[Fließtext mit 3–5 Sätzen: Beschreibe Ziel, Kontext, Rolle, genutzte Technologien und konkrete Ergebnisse. Verwende eine sachliche, professionelle Sprache in der dritten Person. Vermeide jegliche Ich-Formulierungen („Ich war verantwortlich für…“ / „Ich habe…“) oder Wir-Formulierungen. Keine Bulletpoints, keine Aufzählungen, keine Wiederholungen.]</p>
       </li>
       ... (insgesamt 3 Einträge)
     </ul>
 
-  Achte auf einen klaren, zusammenhängenden Fließtext mit 3–5 Sätzen. Keine Bulletpoints, keine Aufzählungen. Keine Titelzeilen oder Technologielisten außerhalb des Fließtexts.
+  Achte auf einen klaren, zusammenhängenden Fließtext mit 3–5 Sätzen. Keine Titelzeilen oder Technologielisten außerhalb des Fließtexts.
 
   Das ist die Liste der Berufserfahrungen: {experiences}
 
@@ -86,7 +86,8 @@ refine_experiences: |
   - konkrete Firmen- und Branchennennung
   - präzise Rollen und Technologien
   - knappe, fokussierte Beschreibung des Projekts und des Beitrags (3–5 Sätze im Fließtext)
-  Achte darauf, dass die Angaben zu Firma, Branche, Zeitraum, Technologie-Stack und Rollen exakt mit den Metadaten der zugrunde liegenden CSV-Einträge übereinstimmen.
+
+  Formuliere **sachlich und objektiv in der dritten Person**, nicht in der Ich- oder Wir-Form. Vermeide persönliche Formulierungen wie „Ich war verantwortlich für …“ oder „Wir konnten …“. Gib keine Listen oder Titelzeilen an. Verwende keine unvollständigen Aussagen.
 
   Gib **ausschließlich** die finale HTML-Ausgabe im folgenden Format zurück – ohne zusätzliche Zeichen oder Kommentare.
 
@@ -94,12 +95,12 @@ refine_experiences: |
     <li>
       <p><em>[Zeitraum]</em><br>
       <em>[Firma], [Branche]</em></p>
-      <p>[Fließtext mit 3–5 Sätzen: Ziel, Kontext, Rolle, Technologien, Ergebnis]</p>
+      <p>[Fließtext mit 3–5 Sätzen: Ziel, Rolle, Technologien, Ergebnisse. Klar und professionell, ohne persönliche Formulierungen oder Listen.]</p>
     </li>
     ...
   </ul>
 
-  Achte auf flüssige, vollständige Fließtexte mit 3–5 Sätzen pro Eintrag. Keine Titelzeilen, keine Technologielisten, keine Stichpunkte oder unvollständige Aussagen.
+  Achte auf flüssige, vollständige Fließtexte mit 3–5 Sätzen pro Eintrag.
 
   Das ist die aktuelle Auswahl: {experiences_html}
 
