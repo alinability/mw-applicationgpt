@@ -90,6 +90,7 @@ def main():
     
         # 3.b Daten aus dem RAG abrufen
         retrieved_docs = get_docs(collection, reduced_text)
+        print(retrieved_docs)
         if retrieved_docs == False:
             break
         

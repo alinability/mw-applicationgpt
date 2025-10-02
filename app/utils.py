@@ -19,3 +19,4 @@ def save_cached_reduction(key: str, text: str):
     os.makedirs(CACHE_DIR, exist_ok=True)
     with open(_get_cache_path(key), "w", encoding="utf-8") as f:
         f.write(text)
+

@@ -53,6 +53,8 @@ get_3_experiences: |
   - eingesetzte Technologien, Frameworks und Tools
   - Methodik (z. B. Agile, Scrum, DevOps etc.)
 
+  Die finalen drei Erfahrungen müssen immer **absteigend nach Zeitraum (neueste zuerst)** sortiert sein.
+
   Gib die drei relevantesten Erfahrungen exakt im folgenden HTML-Format aus:
 
     <ul>
@@ -89,7 +91,7 @@ refine_experiences: |
 
   Formuliere **sachlich und objektiv in der dritten Person**, nicht in der Ich- oder Wir-Form. Vermeide persönliche Formulierungen wie „Ich war verantwortlich für …“ oder „Wir konnten …“. Gib keine Listen oder Titelzeilen an. Verwende keine unvollständigen Aussagen.
 
-  Gib **ausschließlich** die finale HTML-Ausgabe im folgenden Format zurück – ohne zusätzliche Zeichen oder Kommentare.
+  Gib **ausschließlich** die finale HTML-Ausgabe im folgenden Format zurück – ohne zusätzliche Zeichen oder Kommentare. Dabei müssen die Erfahrungen immer **absteigend nach Zeitraum (neueste zuerst)** sortiert sein. Passe dies ggf. an und ändere die Reihenfolge.
 
   <ul>
     <li>
